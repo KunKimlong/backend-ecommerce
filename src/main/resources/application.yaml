@@ -1,0 +1,22 @@
+server:
+  port: ${APPLICATION_PORT}
+spring:
+  application:
+    jwt:
+      secret-key: ${SECRET_KEY}
+      access-toke-exp: ${ACCESS_TOKEN_EXP}
+      refresh-toke-exp: ${ACCESS_TOKEN_EXP}
+    name: ${APPLICATION_NAME}
+    admin-generate:
+      email: ${ADMIN_EMAIL}
+      password: ${ADMIN_PASSWORD}
+      first-name: ${ADMIN_FIRST_NAME}
+      last-name: ${ADMIN_LAST_NAME}
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATASOURCE}
+    username: ${DB_USERNAME}
+    password: ${DB_PW}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml

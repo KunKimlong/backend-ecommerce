@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - context: v1.0
+  - changeSet:
+      id: 1760244114045-1
+      author: kimlong kun
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
+              - column:
+                  name: is_active
+                  type: boolean
+              - column:
+                  name: role
+                  type: varchar(50)
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1763476500155-1
+      author: Kimlong KUN
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_user
+                    references: users(id)
+              - column:
+                  name: phone
+                  type: varchar(20)
+              - column:
+                  name: join_date
+                  type: date
