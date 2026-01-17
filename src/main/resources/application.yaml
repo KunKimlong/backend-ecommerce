@@ -1,5 +1,6 @@
 server:
   port: ${APPLICATION_PORT}
+  host: ${APPLICATION_HOST}
 spring:
   application:
     jwt:
@@ -20,3 +21,7 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    root: info

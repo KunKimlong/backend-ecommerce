@@ -1,16 +1,18 @@
 package com.dyc.backendecommerce.shared.util;
 
 import com.dyc.backendecommerce.user.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.security.Key;
+import java.util.Date;
+import java.util.function.Function;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
-import java.security.Key;
-import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -28,6 +30,7 @@ public class JwtUtil {
     Key key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .setSubject(userDetails.getUsername())
+        .claim("userId", user.getId())
         .claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
         .claim("email", user.getEmail())
         .claim("firstName", user.getFirstName())
@@ -58,6 +61,17 @@ public class JwtUtil {
         .parseClaimsJws(token)
         .getBody()
         .getSubject();
+  }
+
+  public Long extractUserId(String token) {
+    return extractClaim(token, claims -> claims.get("userId", Long.class));
+  }
+
+  public <T> T extractClaim(String token, Function<Claims, T> resolver) {
+    byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    Key key = Keys.hmacShaKeyFor(keyBytes);
+    Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    return resolver.apply(claims);
   }
 
   public boolean validateToken(String token, UserDetails userDetails) {

@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.auth;
 
+import com.dyc.backendecommerce.shared.entity.CustomUserDetails;
 import com.dyc.backendecommerce.shared.util.JwtUtil;
 import com.dyc.backendecommerce.user.User;
 import com.dyc.backendecommerce.user.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class AuthService {
   @Value("${spring.application.jwt.access-toke-exp}")
   private int tokenExpiresIn;
+
   @Value("${spring.application.jwt.refresh-toke-exp}")
   private int refreshTokenExpiresIn;
 
@@ -43,7 +47,8 @@ public class AuthService {
     String accessToken = jwtUtil.generateAccessToken(userDetails, user);
     String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
-    return ResponseEntity.ok(new AuthResponse(accessToken, tokenExpiresIn,refreshToken, refreshTokenExpiresIn));
+    return ResponseEntity.ok(
+        new AuthResponse(accessToken, tokenExpiresIn, refreshToken, refreshTokenExpiresIn));
   }
 
   public ResponseEntity<?> refresh(String refreshToken) {
@@ -57,5 +62,10 @@ public class AuthService {
     } else {
       return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+  }
+
+  public CustomUserDetails getCurrentUserLogin() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return (CustomUserDetails) auth.getPrincipal();
   }
 }
