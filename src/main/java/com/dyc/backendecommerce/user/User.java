@@ -35,4 +35,6 @@ public class User extends Auditable {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
+//  private String gender;
+
 }

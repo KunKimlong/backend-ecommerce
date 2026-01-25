@@ -51,7 +51,7 @@ public class JwtFilter extends OncePerRequestFilter {
             || "jwt".equals(cookie.getName())
             || "token".equals(cookie.getName())) {
           jwt = cookie.getValue();
-          log.debug("JWT extracted from cookie: {}", cookie.getName());
+          log.info("JWT extracted from cookie: {}", cookie.getName());
           break;
         }
       }
