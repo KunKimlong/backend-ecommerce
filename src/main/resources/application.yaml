@@ -25,3 +25,6 @@ spring:
 logging:
   level:
     root: info
+
+app:
+  file-storage-path: ./file-storage

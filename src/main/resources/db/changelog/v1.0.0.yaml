@@ -109,3 +109,142 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_updated_by
                     references: users(id)
+  - changeSet:
+      id: 1769352935207-1
+      author: KimLong Kun
+      changes:
+        - createTable:
+            tableName: colors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: code
+                  type: varchar(7)
+                  constraints:
+                    unique: true
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1769352935207-2
+      author: KimLong Kun
+      changes:
+        - createTable:
+            tableName: assets
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1769352935207-3
+      author: KimLong Kun
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_products_categories
+              - column:
+                  name: color_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_products_categories
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: import_price
+                  type: decimal
+              - column:
+                  name: sale_price
+                  type: decimal
+              - column:
+                  name: stock_qty
+                  type: int
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1770386258567-1
+      author: KimLong Kun
+      changes:
+        - addColumn:
+            tableName: assets
+            columns:
+              - column:
+                  name: path
+                  type: varchar(255)

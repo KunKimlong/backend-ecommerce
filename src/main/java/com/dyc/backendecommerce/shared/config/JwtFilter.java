@@ -47,11 +47,8 @@ public class JwtFilter extends OncePerRequestFilter {
     if (jwt == null && request.getCookies() != null) {
       for (Cookie cookie : request.getCookies()) {
         // Check for common cookie names
-        if ("authToken".equals(cookie.getName())
-            || "jwt".equals(cookie.getName())
-            || "token".equals(cookie.getName())) {
+        if ("authToken".equals(cookie.getName())) {
           jwt = cookie.getValue();
-          log.info("JWT extracted from cookie: {}", cookie.getName());
           break;
         }
       }
@@ -62,7 +59,6 @@ public class JwtFilter extends OncePerRequestFilter {
       try {
         username = jwtUtil.extractUsername(jwt);
       } catch (Exception e) {
-        log.error("Failed to extract username from JWT: {}", e.getMessage());
       }
     }
 

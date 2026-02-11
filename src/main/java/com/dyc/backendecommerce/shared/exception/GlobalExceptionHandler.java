@@ -2,12 +2,14 @@ package com.dyc.backendecommerce.shared.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,5 +31,32 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.UNAUTHORIZED)
             .build();
     return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+  }
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ExceptionDto> handleValidation(MethodArgumentNotValidException ex) {
+    AtomicReference<String> errorMessage = new AtomicReference<>("");
+
+    ex.getBindingResult()
+            .getFieldErrors()
+            .forEach(error -> errorMessage.set(error.getDefaultMessage()));
+
+    ExceptionDto body = ExceptionDto.builder()
+            .timestamp(LocalDateTime.now())
+            .message(errorMessage.get())
+            .status(HttpStatus.BAD_REQUEST)
+            .build();
+
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+  @ExceptionHandler(DuplicateException.class)
+  public ResponseEntity<ExceptionDto> handleDuplicate(DuplicateException ex) {
+
+    ExceptionDto body = ExceptionDto.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.CONFLICT)
+            .message(ex.getMessage())
+            .build();
+
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
   }
 }
