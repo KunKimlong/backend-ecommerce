@@ -24,15 +24,15 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping
-  public ResponseEntity<List<CategoryResponse>> getCategory(
+  public ResponseEntity<CategoryResponse> getCategory(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    List<CategoryResponse> categoriesResponse = categoryService.getAllCategory(pageable);
-    return new ResponseEntity<>(categoriesResponse, HttpStatus.OK);
+    var categoryResponse = categoryService.getAllCategory(pageable);
+    return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
   }
 
   @PostMapping

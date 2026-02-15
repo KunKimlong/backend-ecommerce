@@ -2,6 +2,7 @@ package com.dyc.backendecommerce.category;
 
 import com.dyc.backendecommerce.auth.AuthService;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,18 @@ public class CategoryService {
   }
 
   @Transactional(readOnly = true)
-  public List<CategoryResponse> getAllCategory(Pageable pageable) {
-    List<Category> categories = getAllCategories(pageable).getContent();
-    return categories.stream()
-        .map(category -> modelMapper.map(category, CategoryResponse.class)) // map each element
-        .toList();
+  public CategoryResponse getAllCategory(Pageable pageable) {
+    Page<Category> categories = getAllCategories(pageable);
+    List<CategoryData> categoryData =
+        categories.getContent().stream()
+            .map(category -> modelMapper.map(category, CategoryData.class))
+            .toList();
+    return CategoryResponse.builder()
+        .categoryData(categoryData)
+        .page(categories.getNumber())
+        .pageSize(categories.getSize())
+        .total(categories.getTotalElements())
+        .build();
   }
 
   public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
