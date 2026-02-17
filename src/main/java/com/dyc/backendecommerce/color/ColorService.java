@@ -5,6 +5,7 @@ import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,38 +19,45 @@ public class ColorService {
   private final ModelMapper modelMapper;
 
   @Transactional(readOnly = true)
-  public List<ColorResponse> getAllColor(Pageable pageable) {
-    List<Color> colors = colorRepository.findAll(pageable).getContent();
-    return colors.stream().map(color -> modelMapper.map(color, ColorResponse.class)).toList();
+  public ColorResponse getAllColor(Pageable pageable) {
+    Page<Color> colors = colorRepository.findAll(pageable);
+    List<ColorData> colorData =
+        colors.stream().map(color -> modelMapper.map(color, ColorData.class)).toList();
+    return ColorResponse.builder()
+            .colorData(colorData)
+            .total(colors.getTotalElements())
+            .page(colors.getNumber())
+            .pageSize(colors.getSize())
+            .build();
   }
 
-  public ColorResponse saveColor(ColorRequest request) {
+  public ColorData saveColor(ColorRequest request) {
     var existingColor = colorRepository.findColorByCode(request.getCode());
     if (existingColor != null) {
       throw new DuplicateException("Code already exists");
     }
-    Color color = Color.builder().name(request.getName()).code(request.getCode()).build();
+    Color color = Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
     colorRepository.save(color);
-    return modelMapper.map(color, ColorResponse.class);
+    return modelMapper.map(color, ColorData.class);
   }
 
-  public ColorResponse updateColor(Long id, ColorRequest colorRequest) {
+  public ColorData updateColor(Long id, ColorRequest colorRequest) {
     Color color = colorRepository.findById(id).orElse(null);
     if (color != null) {
-      color.setName(colorRequest.getName());
+      color.setName(colorRequest.getName().toUpperCase());
       color.setCode(colorRequest.getCode());
       colorRepository.save(color);
-      return modelMapper.map(color, ColorResponse.class);
+      return modelMapper.map(color, ColorData.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
   }
 
-  public ColorResponse deleteColor(Long id) {
+  public ColorData deleteColor(Long id) {
     Color color = colorRepository.findById(id).orElse(null);
     if (color != null) {
       colorRepository.delete(color);
-      return modelMapper.map(color, ColorResponse.class);
+      return modelMapper.map(color, ColorData.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }

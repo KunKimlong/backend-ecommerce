@@ -7,16 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
 @Builder
-public class ColorResponse {
-    List<ColorData> colorData;
-    private long total;
-    private int page;
-    private int pageSize;
+public class ColorData {
+    private Long id;
+    private String name;
+    private String code;
+    private AuditableResult createdBy;
+    private AuditableResult updatedBy;
 }

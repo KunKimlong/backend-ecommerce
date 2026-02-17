@@ -26,7 +26,7 @@ public class ColorController {
   private final ColorService colorService;
 
   @GetMapping
-  public ResponseEntity<List<ColorResponse>> getColor(
+  public ResponseEntity<ColorResponse> getColor(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
@@ -37,18 +37,18 @@ public class ColorController {
   }
 
   @PostMapping
-  public ResponseEntity<ColorResponse> createColor(@Valid @RequestBody ColorRequest colorRequest) {
+  public ResponseEntity<ColorData> createColor(@Valid @RequestBody ColorRequest colorRequest) {
     return new ResponseEntity<>(colorService.saveColor(colorRequest), HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ColorResponse> updateColor(
+  public ResponseEntity<ColorData> updateColor(
       @PathVariable Long id, @Valid @RequestBody ColorRequest colorRequest) {
     return new ResponseEntity<>(colorService.updateColor(id, colorRequest), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ColorResponse> deleteColor(@PathVariable Long id) {
+  public ResponseEntity<ColorData> deleteColor(@PathVariable Long id) {
     return new ResponseEntity<>(colorService.deleteColor(id), HttpStatus.OK);
   }
 }
