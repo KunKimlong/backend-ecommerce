@@ -22,7 +22,7 @@ public class ColorRequest {
     @NotBlank(message = "Color is required")
     @Size(min = 7, max = 7, message = "Color must be exactly 7 characters")
     @Pattern(
-            regexp = "^#[A-Za-z0-9]{6}$",
+            regexp = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$",
             message = "Code must start with # and contain 6 characters after it"
     )
             @Schema(defaultValue = "#FFFFFF")

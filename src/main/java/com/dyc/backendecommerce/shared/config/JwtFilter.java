@@ -36,14 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
     String username = null;
     String jwt = null;
 
-    // ✅ 1. Try to extract JWT from Authorization header
     final String authHeader = request.getHeader("Authorization");
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
       jwt = authHeader.substring(7);
       log.debug("JWT extracted from Authorization header");
     }
 
-    // ✅ 2. If not in header, try to extract from cookies
     if (jwt == null && request.getCookies() != null) {
       for (Cookie cookie : request.getCookies()) {
         // Check for common cookie names
@@ -54,7 +52,6 @@ public class JwtFilter extends OncePerRequestFilter {
       }
     }
 
-    // ✅ 3. Extract username from JWT if found
     if (jwt != null) {
       try {
         username = jwtUtil.extractUsername(jwt);

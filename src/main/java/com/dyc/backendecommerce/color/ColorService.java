@@ -36,13 +36,13 @@ public class ColorService {
     if (existingColor != null) {
       throw new DuplicateException("Code already exists");
     }
-    Color color = Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
+    var color = Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
     colorRepository.save(color);
     return modelMapper.map(color, ColorData.class);
   }
 
   public ColorData updateColor(Long id, ColorRequest colorRequest) {
-    Color color = colorRepository.findById(id).orElse(null);
+    var color = colorRepository.findById(id).orElse(null);
     if (color != null) {
       color.setName(colorRequest.getName().toUpperCase());
       color.setCode(colorRequest.getCode());
