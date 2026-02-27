@@ -30,7 +30,7 @@ public class ColorController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
-      @RequestParam(defaultValue = "true") boolean ascending) {
+      @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
     return new ResponseEntity<>(colorService.getAllColor(pageable), HttpStatus.OK);
@@ -49,6 +49,7 @@ public class ColorController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<ColorData> deleteColor(@PathVariable Long id) {
-    return new ResponseEntity<>(colorService.deleteColor(id), HttpStatus.OK);
+    colorService.deleteColor(id);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

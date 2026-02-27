@@ -59,4 +59,26 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
   }
+
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ExceptionDto> handleBadRequest(BadRequestException ex) {
+    ExceptionDto body = ExceptionDto
+            .builder()
+            .timestamp(LocalDateTime.now())
+            .message(ex.getMessage())
+            .status(HttpStatus.BAD_REQUEST)
+            .build();
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<ExceptionDto> handleInternalServerError(InternalServerError ex) {
+    ExceptionDto body = ExceptionDto
+            .builder()
+            .timestamp(LocalDateTime.now())
+            .message(ex.getMessage())
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .build();
+    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }

@@ -1,6 +1,5 @@
 package com.dyc.backendecommerce.category;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,22 +35,21 @@ public class CategoryController {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryResponse> createCategory(
-      @RequestBody CategoryRequest categoryRequest) {
-    CategoryResponse categoryResponse = categoryService.saveCategory(categoryRequest);
+  public ResponseEntity<CategoryData> createCategory(@RequestBody CategoryRequest categoryRequest) {
+    var categoryResponse = categoryService.saveCategory(categoryRequest);
     return new ResponseEntity<>(categoryResponse, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<CategoryResponse> updateCategory(
+  public ResponseEntity<CategoryData> updateCategory(
       @PathVariable long id, @RequestBody CategoryRequest categoryRequest) {
-    CategoryResponse categoryResponse = categoryService.updateCategory(id, categoryRequest);
+    var categoryResponse = categoryService.updateCategory(id, categoryRequest);
     return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<CategoryResponse> deleteCategory(@PathVariable long id) {
-    CategoryResponse categoryResponse = categoryService.deleteCategory(id);
-    return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
+  public ResponseEntity<Void> deleteCategory(@PathVariable long id) {
+    categoryService.deleteCategory(id);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

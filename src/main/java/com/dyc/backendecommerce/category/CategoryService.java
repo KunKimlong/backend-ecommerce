@@ -1,10 +1,8 @@
 package com.dyc.backendecommerce.category;
 
 import com.dyc.backendecommerce.auth.AuthService;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -41,28 +39,27 @@ public class CategoryService {
         .build();
   }
 
-  public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
-    Category category = Category.builder().name(categoryRequest.getName()).build();
+  public CategoryData saveCategory(CategoryRequest categoryRequest) {
+    var category = Category.builder().name(categoryRequest.getName()).build();
     categoryRepository.save(category);
-    return modelMapper.map(category, CategoryResponse.class);
+    return modelMapper.map(category, CategoryData.class);
   }
 
-  public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest) {
-    Category category = categoryRepository.findById(id).orElse(null);
+  public CategoryData updateCategory(Long id, CategoryRequest categoryRequest) {
+    var category = categoryRepository.findById(id).orElse(null);
     if (category != null) {
       category.setName(categoryRequest.getName());
       categoryRepository.save(category);
-      return modelMapper.map(category, CategoryResponse.class);
+      return modelMapper.map(category, CategoryData.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
   }
 
-  public CategoryResponse deleteCategory(Long id) {
-    Category category = categoryRepository.findById(id).orElse(null);
+  public void deleteCategory(Long id) {
+    var category = categoryRepository.findById(id).orElse(null);
     if (category != null) {
       categoryRepository.delete(category);
-      return modelMapper.map(category, CategoryResponse.class);
 
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);

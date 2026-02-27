@@ -53,11 +53,10 @@ public class ColorService {
     }
   }
 
-  public ColorData deleteColor(Long id) {
-    Color color = colorRepository.findById(id).orElse(null);
+  public void deleteColor(Long id) {
+    var color = colorRepository.findById(id).orElse(null);
     if (color != null) {
       colorRepository.delete(color);
-      return modelMapper.map(color, ColorData.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
