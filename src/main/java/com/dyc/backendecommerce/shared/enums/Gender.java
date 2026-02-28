@@ -1,6 +1,5 @@
 package com.dyc.backendecommerce.shared.enums;
 
-public enum UserRole {
-    ADMIN,
-    EMPLOYEE
+public enum Gender {
+    MALE, FEMALE
 }
