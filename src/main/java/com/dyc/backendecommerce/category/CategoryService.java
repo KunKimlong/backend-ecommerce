@@ -1,6 +1,5 @@
 package com.dyc.backendecommerce.category;
 
-import com.dyc.backendecommerce.auth.AuthService;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -14,10 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 public class CategoryService {
-  private static final String NOT_FOUND_MESSAGE = "Category not found in list";
+  public static final String NOT_FOUND_MESSAGE = "Category not found in list";
 
   private final CategoryRepository categoryRepository;
-  private final AuthService authService;
   private final ModelMapper modelMapper;
 
   private Page<Category> getAllCategories(Pageable pageable) {
@@ -64,5 +62,11 @@ public class CategoryService {
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
+  }
+
+  public Category getCategory(Long id) {
+    return categoryRepository
+        .findById(id)
+        .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
   }
 }
