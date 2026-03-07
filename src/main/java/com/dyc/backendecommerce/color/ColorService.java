@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @AllArgsConstructor
 public class ColorService {
-  private static final String NOT_FOUND_MESSAGE = "Color not found";
+  public static final String NOT_FOUND_MESSAGE = "Color not found";
+  private static final String DUPLICATE_CODE_MESSAGE = "Code already exists";
   private final ColorRepository colorRepository;
   private final ModelMapper modelMapper;
 
@@ -24,19 +25,20 @@ public class ColorService {
     List<ColorData> colorData =
         colors.stream().map(color -> modelMapper.map(color, ColorData.class)).toList();
     return ColorResponse.builder()
-            .colorData(colorData)
-            .total(colors.getTotalElements())
-            .page(colors.getNumber())
-            .pageSize(colors.getSize())
-            .build();
+        .colorData(colorData)
+        .total(colors.getTotalElements())
+        .page(colors.getNumber())
+        .pageSize(colors.getSize())
+        .build();
   }
 
   public ColorData saveColor(ColorRequest request) {
     var existingColor = colorRepository.findColorByCode(request.getCode());
     if (existingColor != null) {
-      throw new DuplicateException("Code already exists");
+      throw new DuplicateException(DUPLICATE_CODE_MESSAGE);
     }
-    var color = Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
+    var color =
+        Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
     colorRepository.save(color);
     return modelMapper.map(color, ColorData.class);
   }
@@ -61,4 +63,5 @@ public class ColorService {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
   }
+
 }
