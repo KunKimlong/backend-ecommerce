@@ -3,6 +3,7 @@ package com.dyc.backendecommerce.employee;
 import java.time.LocalDate;
 
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
+import com.dyc.backendecommerce.shared.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class EmployeeData {
   private String firstName;
   private String lastName;
   private String email;
-  private Long gender;
+  private Gender gender;
   private String phone;
   private LocalDate joinDate;
   private AuditableResult createdBy;

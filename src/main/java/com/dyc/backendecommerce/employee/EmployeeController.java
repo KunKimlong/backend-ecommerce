@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -18,19 +18,24 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseEntity<EmployeeResponse> getEmployee(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) LocalDate joinDate,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return new ResponseEntity<>(employeeService.getAllEmployees(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(employeeService.getAllEmployees(name, joinDate, pageable), HttpStatus.OK);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeData> getEmployeeById(@PathVariable Long id) {
+        return new ResponseEntity<>(employeeService.getEmployeeById(id), HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<EmployeeData> createEmployee(@RequestBody EmployeeRequest request) {
-
         return new ResponseEntity<>(employeeService.saveEmployee(request), HttpStatus.CREATED);
     }
 
@@ -43,8 +48,7 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable long id) {
-
-        employeeService.deleteCategory(id);
+        employeeService.deleteEmployee(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

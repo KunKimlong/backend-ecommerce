@@ -31,5 +31,6 @@ public class EmployeeRequest {
     private String phone;
     @NotNull
     private LocalDate joinDate;
+    private Long assetId;
     // getters and setters
 }

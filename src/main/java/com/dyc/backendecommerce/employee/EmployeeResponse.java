@@ -14,8 +14,8 @@ import java.util.List;
 @Getter
 @Builder
 public class EmployeeResponse {
-    List<EmployeeData> employeeData;
-    private long total;
-    private int page;
-    private int pageSize;
+  List<EmployeeData> employeeData;
+  private long total;
+  private int page;
+  private int pageSize;
 }

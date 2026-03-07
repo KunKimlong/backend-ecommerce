@@ -24,11 +24,11 @@ public class SecurityConfig {
 
   private final JwtFilter jwtFilter;
   private static final String[] PUBLIC_API = {
-    "/api/auth/**",
-    "/v3/api-docs/**",
-    "/swagger-ui.html",
-    "/swagger-ui/**",
-    "/swagger-ui/index.html"
+          "/api/auth/**",
+          "/v3/api-docs/**",
+          "/swagger-ui.html",
+          "/swagger-ui/**",
+          "/swagger-ui/index.html"
   };
 
   @Bean
@@ -38,11 +38,11 @@ public class SecurityConfig {
 //                    csrf ->
 //                        csrf.ignoringRequestMatchers("/api/auth/**")
 //                            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-        .authorizeHttpRequests(
-            auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
-        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            .authorizeHttpRequests(
+                    auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(
+                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
   }
@@ -77,7 +77,7 @@ public class SecurityConfig {
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-      throws Exception {
+          throws Exception {
     return config.getAuthenticationManager();
   }
 

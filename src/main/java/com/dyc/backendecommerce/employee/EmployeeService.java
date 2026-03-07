@@ -1,9 +1,8 @@
 package com.dyc.backendecommerce.employee;
 
+import com.dyc.backendecommerce.asset.Asset;
+import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.auth.AuthService;
-import com.dyc.backendecommerce.color.Color;
-import com.dyc.backendecommerce.color.ColorData;
-import com.dyc.backendecommerce.color.ColorResponse;
 import com.dyc.backendecommerce.shared.enums.UserRole;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.user.User;
@@ -15,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Transactional
@@ -30,18 +31,25 @@ public class EmployeeService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final AssetRepository assetRepository;
 
-    private Page<Employee> getAllEmployee(Pageable pageable) {
-        return employeeRepository.findAll(pageable);
+    private Page<Employee> getAllEmployee(Specification<Employee> spec, Pageable pageable) {
+        return employeeRepository.findAll(spec, pageable);
     }
 
     @Transactional(readOnly = true)
-    public EmployeeResponse getAllEmployees(Pageable pageable) {
-        Page<Employee> employees = getAllEmployee(pageable);
-        List<EmployeeData> employeeData= employees
+    public EmployeeResponse getAllEmployees(String name, LocalDate joinDate, Pageable pageable) {
+        //filter employee by name and join date
+        Specification<Employee> spec = Specification.allOf(
+                EmployeeSpecification.hasName(name),
+                EmployeeSpecification.hasJoinDate(joinDate)
+        );
+
+        Page<Employee> employees = getAllEmployee(spec, pageable);
+        List<EmployeeData> employeeData = employees
                 .getContent()
                 .stream()
-                .map(employee -> modelMapper.map(employee, EmployeeData.class))
+                .map(this::mapToEmployeeData)
                 .toList();
 
         return EmployeeResponse.builder()
@@ -50,6 +58,12 @@ public class EmployeeService {
                 .page(employees.getNumber())
                 .pageSize(employees.getSize())
                 .build();
+    }
+
+    public EmployeeData getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
+        return mapToEmployeeData(employee);
     }
 
     public EmployeeData saveEmployee(EmployeeRequest request) {
@@ -65,10 +79,11 @@ public class EmployeeService {
         Employee employee = Employee.builder()
                 .phone(request.getPhone())
                 .joinDate(request.getJoinDate())
+                .asset(findAssetOrNull(request.getAssetId()))
                 .user(user)
                 .build();
 
-        return modelMapper.map(employeeRepository.save(employee), EmployeeData.class);
+        return mapToEmployeeData(employeeRepository.save(employee));
     }
 
     public EmployeeData updateEmployee(Long id, EmployeeRequest request) {
@@ -88,15 +103,15 @@ public class EmployeeService {
 
             employee.setPhone(request.getPhone());
             employee.setJoinDate(request.getJoinDate());
+            employee.setAsset(findAssetOrNull(request.getAssetId()));
             employee.setUser(user);
-            return this.modelMapper.map(employeeRepository.save(employee)
-                    , EmployeeData.class);
+            return mapToEmployeeData(employeeRepository.save(employee));
         } else {
             throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
     }
 
-    public void deleteCategory(Long id) {
+    public void deleteEmployee(Long id) {
         Employee employee = employeeRepository.findById(id).orElse(null);
         if (employee != null) {
             employeeRepository.delete(employee);
@@ -104,6 +119,29 @@ public class EmployeeService {
         } else {
             throw new NotFoundException(NOT_FOUND_MESSAGE);
         }
+    }
+
+    private EmployeeData mapToEmployeeData(Employee employee) {
+        //model mapper to map employee to employee data
+        EmployeeData dto = modelMapper.map(employee, EmployeeData.class);
+        if (employee.getUser() != null) {
+            dto.setFirstName(employee.getUser().getFirstName());
+            dto.setLastName(employee.getUser().getLastName());
+            dto.setEmail(employee.getUser().getEmail());
+            dto.setGender(employee.getUser().getGender());
+        }
+        return dto;
+    }
+
+    private Asset findAssetOrNull(Long assetId) {
+        if (assetId == null) {
+            return null;
+        }
+        Asset asset = assetRepository.findById(assetId).orElse(null);
+        if (asset == null) {
+            throw new NotFoundException("Asset not found");
+        }
+        return asset;
     }
 
 }

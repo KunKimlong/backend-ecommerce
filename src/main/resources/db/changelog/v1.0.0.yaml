@@ -329,3 +329,16 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_employee_updated_by
                     references: users(id)
+  - changeSet:
+      id: 1775000001000-1
+      author: codex
+      changes:
+        - addColumn:
+            tableName: employees
+            columns:
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_asset
+                    references: assets(id)
