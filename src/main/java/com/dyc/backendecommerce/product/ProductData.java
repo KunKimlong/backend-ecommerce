@@ -5,6 +5,8 @@ import com.dyc.backendecommerce.category.Category;
 import com.dyc.backendecommerce.color.Color;
 import java.math.BigDecimal;
 import java.util.Set;
+
+import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +30,6 @@ public class ProductData {
   private Category category;
   private Set<Color> colors;
   private Set<Asset> assets;
+  private AuditableResult createdBy;
+  private AuditableResult updatedBy;
 }
