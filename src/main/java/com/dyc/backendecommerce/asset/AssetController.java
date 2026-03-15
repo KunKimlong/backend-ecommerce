@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.asset;
 
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import java.io.IOException;
@@ -31,13 +32,15 @@ public class AssetController {
   private final AssetService assetService;
 
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<AssetData> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<AssetData> uploadFile(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam(value = "assetType", defaultValue = "PRODUCT") AssetType assetType) {
     if (file.isEmpty()) {
       throw new BadRequestException("File is required");
     }
 
     try {
-      return new ResponseEntity<>(assetService.save(file), HttpStatus.CREATED);
+      return new ResponseEntity<>(assetService.save(file, assetType), HttpStatus.CREATED);
     } catch (IOException e) {
       throw new InternalServerError("Internal Server Error");
     }

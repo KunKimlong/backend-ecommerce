@@ -260,7 +260,6 @@ databaseChangeLog:
                   name: size
                   type: bigint
   - changeSet:
-<<<<<<< HEAD
       id: 1772210844909-1
       author: Punlith Kay
       changes:
@@ -327,7 +326,13 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1775000001000-1
-      author: codex
+      author: Punlith Kay
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          columnExists:
+            tableName: employees
+            columnName: asset_id
       changes:
         - addColumn:
             tableName: employees
@@ -338,7 +343,7 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_employee_asset
                     references: assets(id)
-=======
+  - changeSet:
       id: 1772204014911-1
       author: KimLong Kun
       changes:
@@ -444,4 +449,20 @@ databaseChangeLog:
             columns:
               - column:
                   name: color_id
->>>>>>> 52b9560d8015feca0a6f4c18a9ac168d9b9eac3c
+
+  - changeSet:
+      id: 1775000002000-1
+      author: Punlith Kay
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          columnExists:
+            tableName: assets
+            columnName: asset_type
+      changes:
+        - addColumn:
+            tableName: assets
+            columns:
+              - column:
+                  name: asset_type
+                  type: varchar(20)

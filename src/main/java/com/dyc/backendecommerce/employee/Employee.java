@@ -16,15 +16,18 @@ import java.time.LocalDate;
 @Setter
 @Table(name = "employees")
 public class Employee extends Auditable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String phone;
-    private LocalDate joinDate;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String phone;
+  private LocalDate joinDate;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "asset_id")
+  private Asset asset;
+
+  @OneToOne
+  @JoinColumn(name = "user_id", nullable = false, unique = true)
+  private User user;
 }

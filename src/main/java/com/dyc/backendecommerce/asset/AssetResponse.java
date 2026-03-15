@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @Builder
 public class AssetResponse {
-  // TODO: this class must be remove when response create in global
   List<AssetData> assetData;
   private long total;
   private int page;

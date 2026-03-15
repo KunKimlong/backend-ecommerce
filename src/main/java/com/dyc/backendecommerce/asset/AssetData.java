@@ -1,6 +1,7 @@
 package com.dyc.backendecommerce.asset;
 
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class AssetData {
   private String type;
   private Long size;
   private UUID uuid;
+  private AssetType assetType;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }

@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.asset;
 
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.service.StorageService;
@@ -25,7 +26,7 @@ public class AssetService {
   private final AssetRepository assetRepository;
   private final ModelMapper modelMapper;
 
-  public AssetData save(MultipartFile file) throws IOException {
+  public AssetData save(MultipartFile file, AssetType assetType) throws IOException {
     UUID uuid = UUID.randomUUID();
     if (file.getOriginalFilename() == null) {
       throw new InternalServerError("Error uploading file");
@@ -39,6 +40,7 @@ public class AssetService {
             .type(file.getContentType())
             .size(file.getSize())
             .uuid(uuid)
+            .assetType(assetType)
             .build();
     assetRepository.save(asset);
     Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);

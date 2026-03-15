@@ -23,6 +23,8 @@ public class EmployeeData {
   private Gender gender;
   private String phone;
   private LocalDate joinDate;
+  private Long assetId;
+  private String imageUrl;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }

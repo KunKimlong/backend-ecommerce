@@ -24,25 +24,27 @@ public class SecurityConfig {
 
   private final JwtFilter jwtFilter;
   private static final String[] PUBLIC_API = {
-          "/api/auth/**",
-          "/v3/api-docs/**",
-          "/swagger-ui.html",
-          "/swagger-ui/**",
-          "/swagger-ui/index.html"
+    "/api/auth/**",
+    "/api/asset/image/**",
+    "/v3/api-docs/**",
+    "/swagger-ui.html",
+    "/swagger-ui/**",
+    "/swagger-ui/index.html"
   };
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-//                    csrf ->
-//                        csrf.ignoringRequestMatchers("/api/auth/**")
-//                            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-            .authorizeHttpRequests(
-                    auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement(
-                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        .csrf(csrf -> csrf.disable())
+        //                    csrf ->
+        //                        csrf.ignoringRequestMatchers("/api/auth/**")
+        //
+        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        .authorizeHttpRequests(
+            auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
   }
@@ -50,34 +52,22 @@ public class SecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://localhost:3001"
-    ));
-    configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS"
-    ));
-    configuration.setAllowedHeaders(Arrays.asList(
-            "Authorization",
-            "Content-Type",
-            "X-XSRF-TOKEN"
-    ));
-    configuration.setExposedHeaders(Arrays.asList(
-            "Authorization"
-    ));
+    configuration.setAllowedOrigins(
+        Arrays.asList("http://localhost:3000", "http://localhost:3001"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-XSRF-TOKEN"));
+    configuration.setExposedHeaders(Arrays.asList("Authorization"));
     configuration.setAllowCredentials(true);
     configuration.setMaxAge(3600L);
 
-    UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
 
-
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-          throws Exception {
+      throws Exception {
     return config.getAuthenticationManager();
   }
 
