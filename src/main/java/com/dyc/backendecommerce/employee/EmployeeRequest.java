@@ -14,21 +14,14 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeRequest {
-    // User fields
-    @NotBlank
-    private String firstName;
-    @NotBlank
-    private String lastName;
+  // User fields
+  @NotBlank private String firstName;
+  @NotBlank private String lastName;
 
-    private Gender gender;
-    @Email
-    @NotBlank
-    private String email;
-    @NotBlank
-    private String password;
-    // Employee fields
-    @NotBlank
-    private String phone;
-    @NotNull
-    private LocalDate joinDate;
+  private Gender gender;
+  @Email @NotBlank private String email;
+  @NotBlank private String password;
+  // Employee fields
+  @NotBlank private String phone;
+  @NotNull private LocalDate joinDate;
 }

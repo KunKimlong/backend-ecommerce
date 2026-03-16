@@ -40,7 +40,7 @@ public class AssetController {
     }
 
     try {
-      return new ResponseEntity<>(assetService.save(file, assetType), HttpStatus.CREATED);
+      return new ResponseEntity<>(assetService.save(file,AssetType.PRODUCT), HttpStatus.CREATED);
     } catch (IOException e) {
       throw new InternalServerError("Internal Server Error");
     }

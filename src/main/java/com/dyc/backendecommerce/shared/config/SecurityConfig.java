@@ -25,7 +25,6 @@ public class SecurityConfig {
   private final JwtFilter jwtFilter;
   private static final String[] PUBLIC_API = {
     "/api/auth/**",
-    "/api/asset/image/**",
     "/v3/api-docs/**",
     "/swagger-ui.html",
     "/swagger-ui/**",
@@ -36,10 +35,6 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
-        //                    csrf ->
-        //                        csrf.ignoringRequestMatchers("/api/auth/**")
-        //
-        // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
         .authorizeHttpRequests(
             auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
