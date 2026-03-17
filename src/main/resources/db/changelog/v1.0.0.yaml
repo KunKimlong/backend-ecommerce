@@ -260,6 +260,90 @@ databaseChangeLog:
                   name: size
                   type: bigint
   - changeSet:
+      id: 1772210844909-1
+      author: Punlith Kay
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: gender
+                  type: varchar(7)
+  - changeSet:
+      id: 1772210844909-2
+      author: Punlith Kay
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: employees
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_user
+                    references: users(id)
+              - column:
+                  name: phone
+                  type: varchar(20)
+              - column:
+                  name: join_date
+                  type: date
+  - changeSet:
+      id: 1772210844909-3
+      author: Punlith Kay
+      changes:
+        - addColumn:
+            tableName: employees
+            columns:
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1775000001000-1
+      author: Punlith Kay
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          columnExists:
+            tableName: employees
+            columnName: asset_id
+      changes:
+        - addColumn:
+            tableName: employees
+            columns:
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_employee_asset
+                    references: assets(id)
+  - changeSet:
       id: 1772204014911-1
       author: KimLong Kun
       changes:
@@ -365,3 +449,20 @@ databaseChangeLog:
             columns:
               - column:
                   name: color_id
+
+  - changeSet:
+      id: 1773679298645
+      author: Punlith Kay
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          columnExists:
+            tableName: assets
+            columnName: asset_type
+      changes:
+        - addColumn:
+            tableName: assets
+            columns:
+              - column:
+                  name: asset_type
+                  type: varchar(20)
