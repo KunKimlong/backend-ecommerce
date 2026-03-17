@@ -2,13 +2,11 @@ server:
   port: ${APPLICATION_PORT}
   host: ${APPLICATION_HOST}
 spring:
-  config:
-    import: optional:file:.env[.properties]
   application:
     jwt:
       secret-key: ${SECRET_KEY}
       access-toke-exp: ${ACCESS_TOKEN_EXP}
-      refresh-toke-exp: ${REFRESH_TOKEN_EXP}
+      refresh-toke-exp: ${ACCESS_TOKEN_EXP}
     name: ${APPLICATION_NAME}
     admin-generate:
       email: ${ADMIN_EMAIL}
@@ -21,8 +19,7 @@ spring:
     password: ${DB_PW}
     driver-class-name: org.postgresql.Driver
   liquibase:
-    enabled: ${LIQUIBASE_ENABLED:true}
-    clear-checksums: ${LIQUIBASE_CLEAR_CHECKSUMS:true}
+    enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 logging:
