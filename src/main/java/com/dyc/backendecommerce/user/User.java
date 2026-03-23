@@ -1,6 +1,7 @@
 package com.dyc.backendecommerce.user;
 
 import com.dyc.backendecommerce.shared.entity.Auditable;
+import com.dyc.backendecommerce.shared.enums.Gender;
 import com.dyc.backendecommerce.shared.enums.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,6 +36,6 @@ public class User extends Auditable {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-//  private String gender;
+  private Gender gender;
 
 }

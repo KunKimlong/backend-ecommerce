@@ -1,6 +1,6 @@
 package com.dyc.backendecommerce.shared.enums;
 
-public enum UserRole {
-  ADMIN,
-  EMPLOYEE
+public enum AssetType {
+  USER,
+  PRODUCT
 }

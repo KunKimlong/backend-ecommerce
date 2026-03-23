@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.asset;
 
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,4 +20,5 @@ public class AssetData {
   private String type;
   private Long size;
   private UUID uuid;
+  private AssetType assetType;
 }

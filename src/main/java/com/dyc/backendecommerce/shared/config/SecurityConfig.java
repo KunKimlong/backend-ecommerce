@@ -35,10 +35,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-//                    csrf ->
-//                        csrf.ignoringRequestMatchers("/api/auth/**")
-//                            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+        .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(
             auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
@@ -51,30 +48,18 @@ public class SecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:3000",
-            "http://localhost:3001"
-    ));
-    configuration.setAllowedMethods(Arrays.asList(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS"
-    ));
-    configuration.setAllowedHeaders(Arrays.asList(
-            "Authorization",
-            "Content-Type",
-            "X-XSRF-TOKEN"
-    ));
-    configuration.setExposedHeaders(Arrays.asList(
-            "Authorization"
-    ));
+    configuration.setAllowedOrigins(
+        Arrays.asList("http://localhost:3000", "http://localhost:3001"));
+    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-XSRF-TOKEN"));
+    configuration.setExposedHeaders(Arrays.asList("Authorization"));
     configuration.setAllowCredentials(true);
     configuration.setMaxAge(3600L);
 
-    UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
-
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)

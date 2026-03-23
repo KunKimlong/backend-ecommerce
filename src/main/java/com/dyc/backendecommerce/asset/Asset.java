@@ -1,7 +1,10 @@
 package com.dyc.backendecommerce.asset;
 
 import com.dyc.backendecommerce.shared.entity.Auditable;
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,4 +33,7 @@ public class Asset extends Auditable {
   private UUID uuid;
   private String type;
   private Long size;
+
+  @Enumerated(EnumType.STRING)
+  private AssetType assetType;
 }

@@ -1,16 +1,16 @@
 package com.dyc.backendecommerce.asset;
 
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.service.StorageService;
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
-
-import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class AssetService {
   private final AssetRepository assetRepository;
   private final ModelMapper modelMapper;
 
-  public AssetResponse save(MultipartFile file) throws IOException {
+  public AssetResponse save(MultipartFile file, AssetType assetType) throws IOException {
     UUID uuid = UUID.randomUUID();
     if (file.getOriginalFilename() == null) {
       throw new InternalServerError("Error uploading file");
@@ -41,6 +41,7 @@ public class AssetService {
             .type(file.getContentType())
             .size(file.getSize())
             .uuid(uuid)
+            .assetType(assetType)
             .build();
     assetRepository.save(asset);
     Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);

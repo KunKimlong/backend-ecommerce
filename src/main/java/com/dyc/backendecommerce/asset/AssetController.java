@@ -1,12 +1,12 @@
 package com.dyc.backendecommerce.asset;
 
+import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -39,7 +39,7 @@ public class AssetController {
     }
 
     try {
-      return new ResponseEntity<>(assetService.save(file), HttpStatus.CREATED);
+      return new ResponseEntity<>(assetService.save(file, AssetType.PRODUCT), HttpStatus.CREATED);
     } catch (IOException e) {
       throw new InternalServerError("Internal Server Error");
     }

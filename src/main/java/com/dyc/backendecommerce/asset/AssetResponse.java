@@ -1,13 +1,12 @@
 package com.dyc.backendecommerce.asset;
 
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
