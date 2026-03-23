@@ -13,8 +13,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class CategoryData {
-    private Long id;
-    private String name;
-    private AuditableResult createdBy;
-    private AuditableResult updatedBy;
+  private Long id;
+  private String name;
 }

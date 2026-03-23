@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
   @NonNull
   @EntityGraph(attributePaths = {"category", "colors", "assets"})
   Optional<Product> findById(@NonNull Long id);
+  @NonNull
+  @EntityGraph(attributePaths = {"category", "colors", "assets"})
+  Page<Product> findByCreatedAtAfterOrderByCreatedAtDesc(
+          LocalDateTime date,
+          Pageable pageable
+  );
 }

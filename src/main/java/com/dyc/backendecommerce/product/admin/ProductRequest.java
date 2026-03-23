@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.product;
+package com.dyc.backendecommerce.product.admin;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

@@ -1,12 +1,11 @@
 package com.dyc.backendecommerce.color;
 
+import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +13,9 @@ import java.util.List;
 @Getter
 @Builder
 public class ColorResponse {
-  List<ColorData> colorData;
-  private long total;
-  private int page;
-  private int pageSize;
+    private Long id;
+    private String name;
+    private String code;
+    private AuditableResult createdBy;
+    private AuditableResult updatedBy;
 }

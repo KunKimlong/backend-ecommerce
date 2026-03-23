@@ -2,6 +2,7 @@ package com.dyc.backendecommerce.color;
 
 import com.dyc.backendecommerce.shared.exception.DuplicateException;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,19 +21,20 @@ public class ColorService {
   private final ModelMapper modelMapper;
 
   @Transactional(readOnly = true)
-  public ColorResponse getAllColor(Pageable pageable) {
+  public ResponseData<ColorResponse> getAllColor(Pageable pageable) {
     Page<Color> colors = colorRepository.findAll(pageable);
-    List<ColorData> colorData =
-        colors.stream().map(color -> modelMapper.map(color, ColorData.class)).toList();
-    return ColorResponse.builder()
-        .colorData(colorData)
+    List<ColorResponse> colorData =
+        colors.stream().map(color -> modelMapper.map(color, ColorResponse.class)).toList();
+
+    return ResponseData.<ColorResponse>builder()
+        .data(colorData)
         .total(colors.getTotalElements())
         .page(colors.getNumber())
         .pageSize(colors.getSize())
         .build();
   }
 
-  public ColorData saveColor(ColorRequest request) {
+  public ColorResponse saveColor(ColorRequest request) {
     var existingColor = colorRepository.findColorByCode(request.getCode());
     if (existingColor != null) {
       throw new DuplicateException(DUPLICATE_CODE_MESSAGE);
@@ -40,16 +42,16 @@ public class ColorService {
     var color =
         Color.builder().name(request.getName().toUpperCase()).code(request.getCode()).build();
     colorRepository.save(color);
-    return modelMapper.map(color, ColorData.class);
+    return modelMapper.map(color, ColorResponse.class);
   }
 
-  public ColorData updateColor(Long id, ColorRequest colorRequest) {
+  public ColorResponse updateColor(Long id, ColorRequest colorRequest) {
     var color = colorRepository.findById(id).orElse(null);
     if (color != null) {
       color.setName(colorRequest.getName().toUpperCase());
       color.setCode(colorRequest.getCode());
       colorRepository.save(color);
-      return modelMapper.map(color, ColorData.class);
+      return modelMapper.map(color, ColorResponse.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
@@ -63,5 +65,4 @@ public class ColorService {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
   }
-
 }

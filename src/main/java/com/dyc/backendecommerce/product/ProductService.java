@@ -5,8 +5,13 @@ import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.category.CategoryService;
 import com.dyc.backendecommerce.color.Color;
 import com.dyc.backendecommerce.color.ColorRepository;
+import com.dyc.backendecommerce.product.admin.ProductResponse;
+import com.dyc.backendecommerce.product.admin.ProductRequest;
+import com.dyc.backendecommerce.product.store.ProductData;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
+
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +33,7 @@ public class ProductService {
   private final CategoryService categoryService;
   private static final String NOT_FOUND = "Product not found";
 
-  public ProductData save(ProductRequest request) {
+  public ProductResponse save(ProductRequest request) {
     var category = categoryService.getCategory(request.getCategoryId());
     Set<Color> colors = new HashSet<>();
     if (request.getColorIds() != null && !request.getColorIds().isEmpty()) {
@@ -51,11 +56,25 @@ public class ProductService {
             .colors(colors)
             .build();
 
-    return modelMapper.map(productRepository.save(product), ProductData.class);
+    return modelMapper.map(productRepository.save(product), ProductResponse.class);
   }
 
-  public ResponseData<ProductData> getAllProducts(Pageable pageable) {
+  public ResponseData<ProductResponse> getAllProducts(Pageable pageable) {
     Page<Product> products = productRepository.findAll(pageable);
+    List<ProductResponse> productDataList =
+        products.stream().map(product -> modelMapper.map(product, ProductResponse.class)).toList();
+    return ResponseData.<ProductResponse>builder()
+        .data(productDataList)
+        .total(products.getTotalElements())
+        .page(products.getNumber())
+        .pageSize(pageable.getPageSize())
+        .build();
+  }
+
+  public ResponseData<ProductData> getNewArrivalProducts(Pageable pageable) {
+    var sevenDaysAgo = LocalDateTime.now().minusDays(10);
+    Page<Product> products =
+        productRepository.findByCreatedAtAfterOrderByCreatedAtDesc(sevenDaysAgo, pageable);
     List<ProductData> productDataList =
         products.stream().map(product -> modelMapper.map(product, ProductData.class)).toList();
     return ResponseData.<ProductData>builder()
@@ -66,13 +85,13 @@ public class ProductService {
         .build();
   }
 
-  public ProductData getProductById(Long id) {
+  public ProductResponse getProductById(Long id) {
     var product =
         productRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND));
-    return modelMapper.map(product, ProductData.class);
+    return modelMapper.map(product, ProductResponse.class);
   }
 
-  public ProductData update(Long id, ProductRequest request) {
+  public ProductResponse update(Long id, ProductRequest request) {
     var product =
         productRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND));
     Set<Color> colors = new HashSet<>();
@@ -96,7 +115,7 @@ public class ProductService {
     product.setColors(colors);
     product.setAssets(assets);
 
-    return modelMapper.map(productRepository.save(product), ProductData.class);
+    return modelMapper.map(productRepository.save(product), ProductResponse.class);
   }
 
   public void delete(Long id) {

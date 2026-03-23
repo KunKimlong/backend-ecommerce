@@ -5,6 +5,8 @@ import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -31,7 +33,7 @@ public class AssetController {
   private final AssetService assetService;
 
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<AssetData> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<AssetResponse> uploadFile(@RequestParam("file") MultipartFile file) {
     if (file.isEmpty()) {
       throw new BadRequestException("File is required");
     }
@@ -44,7 +46,7 @@ public class AssetController {
   }
 
   @GetMapping
-  public ResponseEntity<AssetResponse> getAsset(
+  public ResponseEntity<ResponseData<AssetResponse>> getAsset(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,

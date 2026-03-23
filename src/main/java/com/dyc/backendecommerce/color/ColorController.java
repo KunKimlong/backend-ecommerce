@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.color;
 
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/color")
@@ -26,7 +25,7 @@ public class ColorController {
   private final ColorService colorService;
 
   @GetMapping
-  public ResponseEntity<ColorResponse> getColor(
+  public ResponseEntity<ResponseData<ColorResponse>> getColor(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
@@ -37,18 +36,18 @@ public class ColorController {
   }
 
   @PostMapping
-  public ResponseEntity<ColorData> createColor(@Valid @RequestBody ColorRequest colorRequest) {
+  public ResponseEntity<ColorResponse> createColor(@Valid @RequestBody ColorRequest colorRequest) {
     return new ResponseEntity<>(colorService.saveColor(colorRequest), HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ColorData> updateColor(
+  public ResponseEntity<ColorResponse> updateColor(
       @PathVariable Long id, @Valid @RequestBody ColorRequest colorRequest) {
     return new ResponseEntity<>(colorService.updateColor(id, colorRequest), HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ColorData> deleteColor(@PathVariable Long id) {
+  public ResponseEntity<ColorResponse> deleteColor(@PathVariable Long id) {
     colorService.deleteColor(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }

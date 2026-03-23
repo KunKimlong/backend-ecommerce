@@ -2,6 +2,8 @@ package com.dyc.backendecommerce.category;
 
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import java.util.List;
+
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,32 +25,33 @@ public class CategoryService {
   }
 
   @Transactional(readOnly = true)
-  public CategoryResponse getAllCategory(Pageable pageable) {
+  public ResponseData<CategoryResponse> getAllCategory(Pageable pageable) {
     Page<Category> categories = getAllCategories(pageable);
-    List<CategoryData> categoryData =
+    List<CategoryResponse> categoryData =
         categories.getContent().stream()
-            .map(category -> modelMapper.map(category, CategoryData.class))
+            .map(category -> modelMapper.map(category, CategoryResponse.class))
             .toList();
-    return CategoryResponse.builder()
-        .categoryData(categoryData)
+
+    return ResponseData.<CategoryResponse>builder()
+        .data(categoryData)
         .page(categories.getNumber())
         .pageSize(categories.getSize())
         .total(categories.getTotalElements())
         .build();
   }
 
-  public CategoryData saveCategory(CategoryRequest categoryRequest) {
+  public CategoryResponse saveCategory(CategoryRequest categoryRequest) {
     var category = Category.builder().name(categoryRequest.getName()).build();
     categoryRepository.save(category);
-    return modelMapper.map(category, CategoryData.class);
+    return modelMapper.map(category, CategoryResponse.class);
   }
 
-  public CategoryData updateCategory(Long id, CategoryRequest categoryRequest) {
+  public CategoryResponse updateCategory(Long id, CategoryRequest categoryRequest) {
     var category = categoryRepository.findById(id).orElse(null);
     if (category != null) {
       category.setName(categoryRequest.getName());
       categoryRepository.save(category);
-      return modelMapper.map(category, CategoryData.class);
+      return modelMapper.map(category, CategoryResponse.class);
     } else {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }

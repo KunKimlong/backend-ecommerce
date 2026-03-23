@@ -1,6 +1,7 @@
 package com.dyc.backendecommerce.category;
 
-import java.util.List;
+
+import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,9 +14,8 @@ import lombok.Setter;
 @Getter
 @Builder
 public class CategoryResponse {
-    private List<CategoryData> categoryData;
-    private long total;
-    private int page;
-    private int pageSize;
+  private Long id;
+  private String name;
+  private AuditableResult createdBy;
+  private AuditableResult updatedBy;
 }
-

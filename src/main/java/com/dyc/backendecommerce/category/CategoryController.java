@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.category;
 
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,7 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping
-  public ResponseEntity<CategoryResponse> getCategory(
+  public ResponseEntity<ResponseData<CategoryResponse>> getCategory(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
@@ -35,13 +36,14 @@ public class CategoryController {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryData> createCategory(@RequestBody CategoryRequest categoryRequest) {
+  public ResponseEntity<CategoryResponse> createCategory(
+      @RequestBody CategoryRequest categoryRequest) {
     var categoryResponse = categoryService.saveCategory(categoryRequest);
     return new ResponseEntity<>(categoryResponse, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<CategoryData> updateCategory(
+  public ResponseEntity<CategoryResponse> updateCategory(
       @PathVariable long id, @RequestBody CategoryRequest categoryRequest) {
     var categoryResponse = categoryService.updateCategory(id, categoryRequest);
     return new ResponseEntity<>(categoryResponse, HttpStatus.OK);

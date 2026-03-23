@@ -1,15 +1,12 @@
-package com.dyc.backendecommerce.product;
+package com.dyc.backendecommerce.product.store;
 
-import com.dyc.backendecommerce.asset.Asset;
-import com.dyc.backendecommerce.category.Category;
-import com.dyc.backendecommerce.color.Color;
+import com.dyc.backendecommerce.asset.AssetData;
+import com.dyc.backendecommerce.category.CategoryData;
+import com.dyc.backendecommerce.color.ColorData;
 import java.math.BigDecimal;
 import java.util.Set;
-
-import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +16,6 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-@Data
 public class ProductData {
   private Long id;
   private String name;
@@ -27,9 +23,7 @@ public class ProductData {
   private BigDecimal importPrice;
   private BigDecimal salePrice;
   private int stockQty;
-  private Category category;
-  private Set<Color> colors;
-  private Set<Asset> assets;
-  private AuditableResult createdBy;
-  private AuditableResult updatedBy;
+  private CategoryData category;
+  private Set<ColorData> colors;
+  private Set<AssetData> assets;
 }

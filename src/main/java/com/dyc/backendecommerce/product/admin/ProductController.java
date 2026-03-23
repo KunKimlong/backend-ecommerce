@@ -1,5 +1,6 @@
-package com.dyc.backendecommerce.product;
+package com.dyc.backendecommerce.product.admin;
 
+import com.dyc.backendecommerce.product.ProductService;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -19,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/product")
+@RequestMapping("/api/admin/product")
 public class ProductController {
   private final ProductService productService;
 
   @PostMapping
-  public ResponseEntity<ProductData> saveProduct(@RequestBody ProductRequest productRequest) {
+  public ResponseEntity<ProductResponse> saveProduct(@RequestBody ProductRequest productRequest) {
     return new ResponseEntity<>(productService.save(productRequest), HttpStatus.CREATED);
   }
 
   @GetMapping
-  public ResponseEntity<ResponseData<ProductData>> getColor(
+  public ResponseEntity<ResponseData<ProductResponse>> getProduct(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
@@ -40,12 +41,12 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductData> findById(@PathVariable Long id) {
+  public ResponseEntity<ProductResponse> findById(@PathVariable Long id) {
     return new ResponseEntity<>(productService.getProductById(id), HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ProductData> updateProduct(
+  public ResponseEntity<ProductResponse> updateProduct(
       @PathVariable Long id, @RequestBody ProductRequest productRequest) {
     return new ResponseEntity<>(productService.update(id, productRequest), HttpStatus.OK);
   }

@@ -1,0 +1,66 @@
+databaseChangeLog:
+  - context: v1.1.0
+  - changeSet:
+      id: 1773758068045-1
+      author: KimLong KUN
+      changes:
+        - createTable:
+            tableName: banners
+            columns:
+              - column:
+                    name: id
+                    type: BIGINT
+                    autoIncrement: true
+                    constraints:
+                      primaryKey: true
+              - column:
+                  name: label
+                  type: varchar(100)
+              - column:
+                  name: header_label
+                  type: varchar(50)
+              - column:
+                  name: type
+                  type: varchar(50)
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: button_name
+                  type: varchar(20)
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_banner_product
+                    references: products(id)
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_banner_asset
+                    references: assets(id)
+              - column:
+                  name: start_at
+                  type: timestamp
+              - column:
+                  name: end_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_updated_by
+                    references: users(id)

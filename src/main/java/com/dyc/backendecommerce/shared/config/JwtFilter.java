@@ -59,7 +59,6 @@ public class JwtFilter extends OncePerRequestFilter {
       }
     }
 
-    // ✅ 4. Authenticate if username is valid and no authentication exists
     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
       try {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);

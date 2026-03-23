@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+
+import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -25,7 +27,7 @@ public class AssetService {
   private final AssetRepository assetRepository;
   private final ModelMapper modelMapper;
 
-  public AssetData save(MultipartFile file) throws IOException {
+  public AssetResponse save(MultipartFile file) throws IOException {
     UUID uuid = UUID.randomUUID();
     if (file.getOriginalFilename() == null) {
       throw new InternalServerError("Error uploading file");
@@ -42,7 +44,7 @@ public class AssetService {
             .build();
     assetRepository.save(asset);
     Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-    var assetData = modelMapper.map(asset, AssetData.class);
+    var assetData = modelMapper.map(asset, AssetResponse.class);
     var responsePath = "/image/" + assetData.getUuid().toString();
     assetData.setPath(responsePath);
     return assetData;
@@ -56,15 +58,16 @@ public class AssetService {
     return assetRepository.findByUuid(uuid);
   }
 
-  public AssetResponse getAssetResponse(Pageable pageable) {
+  public ResponseData<AssetResponse> getAssetResponse(Pageable pageable) {
     Page<Asset> assets = assetRepository.findAll(pageable);
-    List<AssetData> assetDatas =
+    List<AssetResponse> assetDatas =
         assets.getContent().stream()
-            .map(asset -> modelMapper.map(asset, AssetData.class))
+            .map(asset -> modelMapper.map(asset, AssetResponse.class))
             .peek(assetData -> assetData.setPath("/image/" + assetData.getUuid()))
             .toList();
-    return AssetResponse.builder()
-        .assetData(assetDatas)
+
+    return ResponseData.<AssetResponse>builder()
+        .data(assetDatas)
         .total(assets.getTotalElements())
         .page(assets.getNumber())
         .pageSize(assets.getSize())
