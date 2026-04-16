@@ -25,6 +25,8 @@ spring:
 logging:
   level:
     root: info
+  file:
+    name: ${LOG_FILE:./file-storage/logs/backend.log}
 
 app:
-  file-storage-path: ./file-storage
+  file-storage-path: ${FILE_PATH:./file-storage}

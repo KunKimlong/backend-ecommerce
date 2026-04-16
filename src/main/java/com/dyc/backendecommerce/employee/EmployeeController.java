@@ -1,8 +1,7 @@
 package com.dyc.backendecommerce.employee;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping("/api/employee")
 @AllArgsConstructor
 public class EmployeeController {
   private final EmployeeService employeeService;
-  private final ObjectMapper objectMapper;
 
   @GetMapping
   public ResponseEntity<EmployeeResponse> getEmployee(
@@ -43,29 +39,20 @@ public class EmployeeController {
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> createEmployee(
-      @RequestPart("data")
-          @Parameter(
-              schema =
-                  @Schema(type = "string", format = "json", implementation = EmployeeRequest.class))
-          String dataJson,
-      @RequestPart(value = "file", required = false) MultipartFile file)
-      throws Exception {
-    EmployeeRequest request = objectMapper.readValue(dataJson, EmployeeRequest.class);
-    return new ResponseEntity<>(employeeService.saveEmployee(request, file), HttpStatus.CREATED);
+          @RequestPart("data") @Valid EmployeeRequest request,
+          @RequestPart(value = "file", required = false) MultipartFile file
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(employeeService.saveEmployee(request, file));
   }
 
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> updateEmployee(
-      @PathVariable long id,
-      @RequestPart("data")
-          @Parameter(
-              schema =
-                  @Schema(type = "string", format = "json", implementation = EmployeeRequest.class))
-          String dataJson,
-      @RequestPart(value = "file", required = false) MultipartFile file)
-      throws Exception {
-    EmployeeRequest request = objectMapper.readValue(dataJson, EmployeeRequest.class);
-    return new ResponseEntity<>(employeeService.updateEmployee(id, request, file), HttpStatus.OK);
+          @PathVariable long id,
+          @RequestPart("data") EmployeeRequest request,
+          @RequestPart(value = "file", required = false) MultipartFile file
+  ) {
+    return ResponseEntity.ok(employeeService.updateEmployee(id, request, file));
   }
 
   @DeleteMapping("/{id}")

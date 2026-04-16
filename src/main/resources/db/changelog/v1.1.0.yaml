@@ -8,11 +8,11 @@ databaseChangeLog:
             tableName: banners
             columns:
               - column:
-                    name: id
-                    type: BIGINT
-                    autoIncrement: true
-                    constraints:
-                      primaryKey: true
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
               - column:
                   name: label
                   type: varchar(100)
@@ -64,3 +64,42 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_updated_by
                     references: users(id)
+  - changeSet:
+      id: 1774685278918-1
+      author: KimLong Kun
+      changes:
+        - createTable:
+            tableName: banner_types
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(100)
+  - changeSet:
+      id: 1774685278918-2
+      author: KimLong Kun
+      changes:
+        - sqlFile:
+            path: ./db/sql/banner_default_value.sql
+  - changeSet:
+      id: 1774685278918-3
+      author: KimLong Kun
+      changes:
+        - dropColumn:
+            tableName: banners
+            columns:
+              - column:
+                  name: type
+        - addColumn:
+            tableName: banners
+            columns:
+              - column:
+                  name: banner_type_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_banner_banner_type
+                    references: banner_types(id)

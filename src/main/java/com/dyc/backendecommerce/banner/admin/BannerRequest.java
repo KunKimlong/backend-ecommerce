@@ -15,7 +15,7 @@ import lombok.Setter;
 public class BannerRequest {
     private String label;
     private String headerLabel;
-    private String type;
+    private Long bannerTypeId;
     private String description;
     private String buttonName;
     private Long productId;
