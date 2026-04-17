@@ -19,10 +19,10 @@ public class JwtUtil {
   @Value("${spring.application.jwt.secret-key}")
   private String secretKey;
 
-  @Value("${spring.application.jwt.access-toke-exp}")
+  @Value("${spring.application.jwt.access-token-exp}")
   private long accessTokenExpired;
 
-  @Value("${spring.application.jwt.refresh-toke-exp}")
+  @Value("${spring.application.jwt.refresh-token-exp}")
   private long refreshTokenExpired;
 
   public String generateAccessToken(UserDetails userDetails, User user) {

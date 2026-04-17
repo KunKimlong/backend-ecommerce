@@ -5,8 +5,8 @@ spring:
   application:
     jwt:
       secret-key: ${SECRET_KEY}
-      access-toke-exp: ${ACCESS_TOKEN_EXP}
-      refresh-toke-exp: ${ACCESS_TOKEN_EXP}
+      access-token-exp: ${ACCESS_TOKEN_EXP}
+      refresh-token-exp: ${ACCESS_TOKEN_EXP}
     name: ${APPLICATION_NAME}
     admin-generate:
       email: ${ADMIN_EMAIL}

@@ -103,3 +103,60 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_banner_banner_type
                     references: banner_types(id)
+  - changeSet:
+      id: 1776324769392-1
+      author: KimLong Kun
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: category_id
+            constraintName: fk_product_category
+            referencedTableName: categories
+            referencedColumnNames: id
+  - changeSet:
+      id: 1776324769392-2
+      author: KimLong Kun
+      changes:
+        - sqlFile:
+            path: ./db/sql/update_assets_set_asset_type_product_for_null.sql
+  - changeSet:
+      id: 1776324769392-3
+      author: KimLong Kun
+      changes:
+        - sqlFile:
+            path: ./db/sql/insert_non_exist_admin_in_table_employees.sql
+  - changeSet:
+      id: 1776324769392-4
+      author: KimLong Kun
+      changes:
+        - sqlFile:
+            path: ./db/sql/update_numeric_value_in_gender_to_string.sql
+  - changeSet:
+      id: 1776410973318-1
+      author: KimLong Kun
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_user_asset
+                    references: assets(id)
+  - changeSet:
+      id: 1776410973318-2
+      author: KimLong Kun
+      changes:
+        - sqlFile:
+            path: ./db/sql/migrate_asset_id_to_users.sql
+  - changeSet:
+      id: 1776410973318-3
+      author: KimLong Kun
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: employees
+            constraintName: fk_employee_asset
+        - dropColumn:
+            tableName: employees
+            columnName: asset_id

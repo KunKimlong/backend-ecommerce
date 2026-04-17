@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-class AuthRequest {
+public class AuthRequest {
     @Schema(defaultValue = "admin@gmail.com")
     private String username;
     @Schema(defaultValue = "admin@123")

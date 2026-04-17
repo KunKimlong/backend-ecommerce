@@ -27,10 +27,6 @@ public class Employee extends Auditable {
   private String phone;
   private LocalDate joinDate;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "asset_id")
-  private Asset asset;
-
   @OneToOne
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
