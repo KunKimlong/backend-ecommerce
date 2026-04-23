@@ -1,8 +1,5 @@
 package com.dyc.backendecommerce.employee;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +17,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EmployeeController {
   private final EmployeeService employeeService;
-  private final ObjectMapper objectMapper;
 
   @GetMapping
   public ResponseEntity<EmployeeResponse> getEmployee(
@@ -43,28 +39,16 @@ public class EmployeeController {
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> createEmployee(
-      @RequestPart("data")
-          @Parameter(
-              schema =
-                  @Schema(type = "string", format = "json", implementation = EmployeeRequest.class))
-          String dataJson,
-      @RequestPart(value = "file", required = false) MultipartFile file)
-      throws Exception {
-    EmployeeRequest request = objectMapper.readValue(dataJson, EmployeeRequest.class);
+      @RequestPart("data") EmployeeRequest request,
+      @RequestPart(value = "file", required = false) MultipartFile file) {
     return new ResponseEntity<>(employeeService.saveEmployee(request, file), HttpStatus.CREATED);
   }
 
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> updateEmployee(
       @PathVariable long id,
-      @RequestPart("data")
-          @Parameter(
-              schema =
-                  @Schema(type = "string", format = "json", implementation = EmployeeRequest.class))
-          String dataJson,
-      @RequestPart(value = "file", required = false) MultipartFile file)
-      throws Exception {
-    EmployeeRequest request = objectMapper.readValue(dataJson, EmployeeRequest.class);
+      @RequestPart("data") EmployeeRequest request,
+      @RequestPart(value = "file", required = false) MultipartFile file) {
     return new ResponseEntity<>(employeeService.updateEmployee(id, request, file), HttpStatus.OK);
   }
 

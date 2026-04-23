@@ -2,17 +2,26 @@ server:
   port: ${APPLICATION_PORT}
   host: ${APPLICATION_HOST}
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     jwt:
       secret-key: ${SECRET_KEY}
       access-toke-exp: ${ACCESS_TOKEN_EXP}
       refresh-toke-exp: ${ACCESS_TOKEN_EXP}
-    name: ${APPLICATION_NAME}
+    name: ${APP_NAME:backend-ecommerce}
     admin-generate:
       email: ${ADMIN_EMAIL}
       password: ${ADMIN_PASSWORD}
       first-name: ${ADMIN_FIRST_NAME}
       last-name: ${ADMIN_LAST_NAME}
+    store-generate:
+      name: ${STORE_NAME:Main Store}
+      description: ${STORE_DESCRIPTION:}
+      location: ${STORE_LOCATION:}
+      support-email: ${STORE_SUPPORT_EMAIL:}
+      support-phone-number: ${STORE_SUPPORT_PHONE_NUMBER:}
+      is-active: ${STORE_IS_ACTIVE:true}
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATASOURCE}
     username: ${DB_USERNAME}
