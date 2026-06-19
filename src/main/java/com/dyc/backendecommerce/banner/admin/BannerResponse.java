@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.banner.admin;
 
+import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.product.store.ProductData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class BannerResponse {
   private String description;
   private String buttonName;
   private ProductData product;
-  private Long assetId;
+  private AssetData asset;
   private LocalDate startAt;
   private LocalDate endAt;
   private AuditableResult createdBy;

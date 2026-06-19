@@ -1,5 +1,8 @@
 package com.dyc.backendecommerce.shared.config;
 
+import com.dyc.backendecommerce.employee.Employee;
+import com.dyc.backendecommerce.employee.EmployeeService;
+import com.dyc.backendecommerce.shared.enums.Gender;
 import com.dyc.backendecommerce.shared.enums.UserRole;
 import com.dyc.backendecommerce.user.User;
 import com.dyc.backendecommerce.user.UserRepository;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 public class AutoCreateAdminConfig implements CommandLineRunner {
 
   private final UserService userService;
+  private final EmployeeService employeeService;
 
   @Value("${spring.application.admin-generate.email}")
   private String email;
@@ -42,8 +46,11 @@ public class AutoCreateAdminConfig implements CommandLineRunner {
               .email(email)
               .password(password)
               .role(UserRole.ADMIN)
+              .gender(Gender.MALE)
               .build();
-      userService.save(request);
+      var user = userService.save(request);
+      var employee = Employee.builder().user(user).build();
+      employeeService.save(employee);
       log.info("Admin created");
     }
   }
