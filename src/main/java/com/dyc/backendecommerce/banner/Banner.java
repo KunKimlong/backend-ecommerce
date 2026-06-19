@@ -61,4 +61,7 @@ public class Banner extends Auditable {
 
   @Column(name = "end_at")
   private LocalDate endAt;
+
+  @Column(name = "banner_order")
+  private Integer order;
 }

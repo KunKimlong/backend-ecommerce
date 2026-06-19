@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.color;
+package com.dyc.backendecommerce.option;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ColorData {
+public class OptionData {
   private Long id;
   private String name;
-  private String code;
 }
