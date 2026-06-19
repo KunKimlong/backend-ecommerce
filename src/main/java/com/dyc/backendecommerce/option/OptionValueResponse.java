@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.color;
+package com.dyc.backendecommerce.option;
 
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,10 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ColorResponse {
-    private Long id;
-    private String name;
-    private String code;
-    private AuditableResult createdBy;
-    private AuditableResult updatedBy;
+public class OptionValueResponse {
+  private Long id;
+  private String name;
+  private OptionResponse option;
+  private AuditableResult createdBy;
+  private AuditableResult updatedBy;
 }

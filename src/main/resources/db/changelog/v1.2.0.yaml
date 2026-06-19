@@ -1,0 +1,234 @@
+databaseChangeLog:
+  - context: v1.2.0
+  - changeSet:
+      id: 1780930380733-1
+      author: antigravity
+      changes:
+        - dropTable:
+            tableName: product_colors
+        - dropTable:
+            tableName: colors
+  - changeSet:
+      id: 1780930380733-2
+      author: antigravity
+      changes:
+        - dropColumn:
+            tableName: products
+            columns:
+              - column:
+                  name: import_price
+              - column:
+                  name: stock_qty
+  - changeSet:
+      id: 1780930380733-3
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: options
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_options_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_options_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1780930380733-4
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: option_values
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_option_values_option
+                    references: options(id)
+                    onDelete: CASCADE
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_option_values_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_option_values_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1780930380733-5
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: product_variants
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_variants_product
+                    references: products(id)
+                    onDelete: CASCADE
+              - column:
+                  name: name
+                  type: varchar(255)
+              - column:
+                  name: price
+                  type: decimal(12,2)
+              - column:
+                  name: sale_price
+                  type: decimal(12,2)
+              - column:
+                  name: stock_qty
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_product_variants_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_product_variants_updated_by
+                    references: users(id)
+  - changeSet:
+      id: 1780930380733-6
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: product_variant_option_values
+            columns:
+              - column:
+                  name: product_variant_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: option_value_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: product_variant_option_values
+            columnNames: product_variant_id, option_value_id
+            constraintName: pk_product_variant_option_values
+        - addForeignKeyConstraint:
+            baseTableName: product_variant_option_values
+            baseColumnNames: product_variant_id
+            referencedTableName: product_variants
+            referencedColumnNames: id
+            constraintName: fk_pv_ov_variant
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: product_variant_option_values
+            baseColumnNames: option_value_id
+            referencedTableName: option_values
+            referencedColumnNames: id
+            constraintName: fk_pv_ov_option_val
+            onDelete: CASCADE
+  - changeSet:
+      id: 1780930380733-7
+      author: antigravity
+      changes:
+        - createTable:
+            tableName: product_variant_assets
+            columns:
+              - column:
+                  name: product_variant_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: product_variant_assets
+            columnNames: product_variant_id, asset_id
+            constraintName: pk_product_variant_assets
+        - addForeignKeyConstraint:
+            baseTableName: product_variant_assets
+            baseColumnNames: product_variant_id
+            referencedTableName: product_variants
+            referencedColumnNames: id
+            constraintName: fk_pv_assets_variant
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: product_variant_assets
+            baseColumnNames: asset_id
+            referencedTableName: assets
+            referencedColumnNames: id
+            constraintName: fk_pv_assets_asset
+            onDelete: CASCADE
+  - changeSet:
+      id: 1780930380733-8
+      author: antigravity
+      changes:
+        - addColumn:
+            tableName: banners
+            columns:
+              - column:
+                  name: banner_order
+                  type: int

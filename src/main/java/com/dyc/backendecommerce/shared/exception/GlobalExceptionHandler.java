@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(RuntimeException.class)
-  public ResponseEntity<ExceptionDto> handleInternalServerError(InternalServerError ex) {
+  public ResponseEntity<ExceptionDto> handleInternalServerError(RuntimeException ex) {
     ExceptionDto body = ExceptionDto
             .builder()
             .timestamp(LocalDateTime.now())

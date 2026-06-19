@@ -1,7 +1,7 @@
 package com.dyc.backendecommerce.product.store;
 
 import com.dyc.backendecommerce.asset.AssetData;
-import com.dyc.backendecommerce.category.CategoryData;
+import com.dyc.backendecommerce.option.OptionValueData;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -15,12 +15,12 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class ProductData {
+public class ProductVariantData {
   private Long id;
   private String name;
-  private String description;
+  private BigDecimal price;
   private BigDecimal salePrice;
-  private CategoryData category;
-  private Set<ProductVariantData> variants;
+  private int stockQty;
+  private Set<OptionValueData> optionValues;
   private Set<AssetData> assets;
 }

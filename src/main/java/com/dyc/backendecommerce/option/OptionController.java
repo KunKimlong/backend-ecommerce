@@ -1,7 +1,6 @@
-package com.dyc.backendecommerce.color;
+package com.dyc.backendecommerce.option;
 
 import com.dyc.backendecommerce.shared.util.ResponseData;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,36 +18,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/option")
 @AllArgsConstructor
-@RequestMapping("/api/color")
-public class ColorController {
-  private final ColorService colorService;
+public class OptionController {
+  private final OptionService optionService;
 
   @GetMapping
-  public ResponseEntity<ResponseData<ColorResponse>> getColor(
+  public ResponseEntity<ResponseData<OptionResponse>> getOptions(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(colorService.getAllColor(pageable), HttpStatus.OK);
+    var optionsResponse = optionService.getAllOptions(pageable);
+    return new ResponseEntity<>(optionsResponse, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<ColorResponse> createColor(@Valid @RequestBody ColorRequest colorRequest) {
-    return new ResponseEntity<>(colorService.saveColor(colorRequest), HttpStatus.CREATED);
+  public ResponseEntity<OptionResponse> createOption(
+      @RequestBody OptionRequest optionRequest) {
+    var optionResponse = optionService.saveOption(optionRequest);
+    return new ResponseEntity<>(optionResponse, HttpStatus.CREATED);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<ColorResponse> updateColor(
-      @PathVariable Long id, @Valid @RequestBody ColorRequest colorRequest) {
-    return new ResponseEntity<>(colorService.updateColor(id, colorRequest), HttpStatus.OK);
+  public ResponseEntity<OptionResponse> updateOption(
+      @PathVariable long id, @RequestBody OptionRequest optionRequest) {
+    var optionResponse = optionService.updateOption(id, optionRequest);
+    return new ResponseEntity<>(optionResponse, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<ColorResponse> deleteColor(@PathVariable Long id) {
-    colorService.deleteColor(id);
+  public ResponseEntity<Void> deleteOption(@PathVariable long id) {
+    optionService.deleteOption(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
