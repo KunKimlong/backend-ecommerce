@@ -5,6 +5,8 @@ import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;
@@ -33,17 +35,20 @@ public class AssetController {
   private final AssetService assetService;
 
   @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<AssetResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+  public ResponseEntity<AssetResponse> uploadFile(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam(defaultValue = "PRODUCT") AssetType assetType) {
     if (file.isEmpty()) {
       throw new BadRequestException("File is required");
     }
 
     try {
-      return new ResponseEntity<>(assetService.save(file, AssetType.PRODUCT), HttpStatus.CREATED);
+      return new ResponseEntity<>(assetService.save(file, assetType), HttpStatus.CREATED);
     } catch (IOException e) {
       throw new InternalServerError("Internal Server Error");
     }
   }
+
 
   @GetMapping
   public ResponseEntity<ResponseData<AssetResponse>> getAsset(

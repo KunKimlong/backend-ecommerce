@@ -2,6 +2,8 @@ server:
   port: ${APPLICATION_PORT}
   host: ${APPLICATION_HOST}
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     jwt:
       secret-key: ${SECRET_KEY}
@@ -13,6 +15,13 @@ spring:
       password: ${ADMIN_PASSWORD}
       first-name: ${ADMIN_FIRST_NAME}
       last-name: ${ADMIN_LAST_NAME}
+    store-generate:
+      name: ${STORE_NAME:Main Store}
+      description: ${STORE_DESCRIPTION:}
+      location: ${STORE_LOCATION:}
+      support-email: ${STORE_SUPPORT_EMAIL:}
+      support-phone-number: ${STORE_SUPPORT_PHONE_NUMBER:}
+      is-active: ${STORE_IS_ACTIVE:true}
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_DATASOURCE}
     username: ${DB_USERNAME}
