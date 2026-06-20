@@ -2,6 +2,7 @@ package com.dyc.backendecommerce.product.admin;
 
 import com.dyc.backendecommerce.product.ProductService;
 import com.dyc.backendecommerce.shared.util.ResponseData;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public class ProductController {
   private final ProductService productService;
 
   @PostMapping
-  public ResponseEntity<ProductResponse> saveProduct(@RequestBody ProductRequest productRequest) {
+  public ResponseEntity<ProductResponse> saveProduct(@Valid @RequestBody ProductRequest productRequest) {
     return new ResponseEntity<>(productService.save(productRequest), HttpStatus.CREATED);
   }
 
@@ -47,7 +48,7 @@ public class ProductController {
 
   @PutMapping("/{id}")
   public ResponseEntity<ProductResponse> updateProduct(
-      @PathVariable Long id, @RequestBody ProductRequest productRequest) {
+      @PathVariable Long id, @Valid @RequestBody ProductRequest productRequest) {
     return new ResponseEntity<>(productService.update(id, productRequest), HttpStatus.OK);
   }
 

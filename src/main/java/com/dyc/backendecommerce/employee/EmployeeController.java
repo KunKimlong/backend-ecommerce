@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.employee;
 
+import jakarta.validation.Valid;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -9,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -39,17 +39,20 @@ public class EmployeeController {
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> createEmployee(
-      @RequestPart("data") EmployeeRequest request,
-      @RequestPart(value = "file", required = false) MultipartFile file) {
-    return new ResponseEntity<>(employeeService.saveEmployee(request, file), HttpStatus.CREATED);
+          @RequestPart("data") @Valid EmployeeRequest request,
+          @RequestPart(value = "file", required = false) MultipartFile file
+  ) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(employeeService.saveEmployee(request, file));
   }
 
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<EmployeeData> updateEmployee(
-      @PathVariable long id,
-      @RequestPart("data") EmployeeRequest request,
-      @RequestPart(value = "file", required = false) MultipartFile file) {
-    return new ResponseEntity<>(employeeService.updateEmployee(id, request, file), HttpStatus.OK);
+          @PathVariable long id,
+          @RequestPart("data") EmployeeRequest request,
+          @RequestPart(value = "file", required = false) MultipartFile file
+  ) {
+    return ResponseEntity.ok(employeeService.updateEmployee(id, request, file));
   }
 
   @DeleteMapping("/{id}")

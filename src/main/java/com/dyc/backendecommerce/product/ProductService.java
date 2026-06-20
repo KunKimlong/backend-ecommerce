@@ -3,18 +3,25 @@ package com.dyc.backendecommerce.product;
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.category.CategoryService;
-import com.dyc.backendecommerce.color.Color;
-import com.dyc.backendecommerce.color.ColorRepository;
+import com.dyc.backendecommerce.option.OptionValue;
+import com.dyc.backendecommerce.option.OptionValueRepository;
 import com.dyc.backendecommerce.product.admin.ProductResponse;
 import com.dyc.backendecommerce.product.admin.ProductRequest;
+import com.dyc.backendecommerce.product.admin.ProductVariantResponse;
+import com.dyc.backendecommerce.product.admin.ProductVariantUpdateRequest;
 import com.dyc.backendecommerce.product.store.ProductData;
+import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -27,34 +34,47 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class ProductService {
   private final ProductRepository productRepository;
-  private final ColorRepository colorRepository;
+  private final ProductVariantRepository productVariantRepository;
+  private final OptionValueRepository optionValueRepository;
   private final AssetRepository assetRepository;
   private final ModelMapper modelMapper;
   private final CategoryService categoryService;
   private static final String NOT_FOUND = "Product not found";
+  private static final String VARIANT_NOT_FOUND = "Variant not found";
 
   public ProductResponse save(ProductRequest request) {
     var category = categoryService.getCategory(request.getCategoryId());
-    Set<Color> colors = new HashSet<>();
-    if (request.getColorIds() != null && !request.getColorIds().isEmpty()) {
-      colors = new HashSet<>(colorRepository.findAllById(request.getColorIds()));
-    }
 
-    Set<Asset> assets = new HashSet<>();
-    if (request.getAssetIds() != null && !request.getAssetIds().isEmpty()) {
-      assets = new HashSet<>(assetRepository.findAllById(request.getAssetIds()));
-    }
+    Set<Asset> assets = getAssets(request.getAssetIds());
+
     var product =
         Product.builder()
             .name(request.getName())
             .description(request.getDescription())
-            .importPrice(request.getImportPrice())
             .salePrice(request.getSalePrice())
-            .stockQty(request.getStockQty())
             .category(category)
             .assets(assets)
-            .colors(colors)
             .build();
+
+    Set<ProductVariant> variants = new HashSet<>();
+    if (request.getVariants() != null) {
+      for (var vr : request.getVariants()) {
+        Set<OptionValue> optionValues = getOptionValues(vr.getOptionValueIds());
+        Set<Asset> variantAssets = getAssets(vr.getAssetIds());
+        var variant =
+            ProductVariant.builder()
+                .name(vr.getName())
+                .price(vr.getPrice())
+                .salePrice(vr.getSalePrice())
+                .stockQty(vr.getStockQty())
+                .optionValues(optionValues)
+                .assets(variantAssets)
+                .product(product)
+                .build();
+        variants.add(variant);
+      }
+    }
+    product.setVariants(variants);
 
     return modelMapper.map(productRepository.save(product), ProductResponse.class);
   }
@@ -94,26 +114,61 @@ public class ProductService {
   public ProductResponse update(Long id, ProductRequest request) {
     var product =
         productRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND));
-    Set<Color> colors = new HashSet<>();
-    if (request.getColorIds() != null && !request.getColorIds().isEmpty()) {
-      colors = new HashSet<>(colorRepository.findAllById(request.getColorIds()));
-    }
 
     var category = categoryService.getCategory(request.getCategoryId());
 
-    Set<Asset> assets = new HashSet<>();
-    if (request.getAssetIds() != null && !request.getAssetIds().isEmpty()) {
-      assets = new HashSet<>(assetRepository.findAllById(request.getAssetIds()));
-    }
+    Set<Asset> assets = getAssets(request.getAssetIds());
 
     product.setName(request.getName());
     product.setDescription(request.getDescription());
-    product.setImportPrice(request.getImportPrice());
     product.setSalePrice(request.getSalePrice());
-    product.setStockQty(request.getStockQty());
     product.setCategory(category);
-    product.setColors(colors);
     product.setAssets(assets);
+
+    Map<Long, ProductVariant> existingVariants = Map.of();
+    if (product.getVariants() != null) {
+      existingVariants =
+          product.getVariants().stream()
+              .filter(v -> v.getId() != null)
+              .collect(Collectors.toMap(ProductVariant::getId, Function.identity()));
+    }
+
+    Set<ProductVariant> updatedVariants = new HashSet<>();
+    if (request.getVariants() != null) {
+      for (var vr : request.getVariants()) {
+        Set<OptionValue> optionValues = getOptionValues(vr.getOptionValueIds());
+        Set<Asset> variantAssets = getAssets(vr.getAssetIds());
+
+        ProductVariant variant;
+        if (vr.getId() != null && existingVariants.containsKey(vr.getId())) {
+          variant = existingVariants.get(vr.getId());
+          variant.setName(vr.getName());
+          variant.setPrice(vr.getPrice());
+          variant.setSalePrice(vr.getSalePrice());
+          variant.setStockQty(vr.getStockQty());
+          variant.setOptionValues(optionValues);
+          variant.setAssets(variantAssets);
+        } else {
+          variant =
+              ProductVariant.builder()
+                  .name(vr.getName())
+                  .price(vr.getPrice())
+                  .salePrice(vr.getSalePrice())
+                  .stockQty(vr.getStockQty())
+                  .optionValues(optionValues)
+                  .assets(variantAssets)
+                  .product(product)
+                  .build();
+        }
+        updatedVariants.add(variant);
+      }
+    }
+
+    if (product.getVariants() == null) {
+      product.setVariants(new HashSet<>());
+    }
+    product.getVariants().clear();
+    product.getVariants().addAll(updatedVariants);
 
     return modelMapper.map(productRepository.save(product), ProductResponse.class);
   }
@@ -123,5 +178,55 @@ public class ProductService {
       throw new NotFoundException(NOT_FOUND);
     }
     productRepository.deleteById(id);
+  }
+
+  public ProductVariantResponse getVariantById(Long variantId) {
+    var variant =
+        productVariantRepository
+            .findWithDetailsById(variantId)
+            .orElseThrow(() -> new NotFoundException(VARIANT_NOT_FOUND));
+    return modelMapper.map(variant, ProductVariantResponse.class);
+  }
+
+  public ProductVariantResponse updateVariant(
+      Long variantId, ProductVariantUpdateRequest request) {
+    var variant =
+        productVariantRepository
+            .findWithDetailsById(variantId)
+            .orElseThrow(() -> new NotFoundException(VARIANT_NOT_FOUND));
+
+    variant.setName(request.getName());
+    variant.setPrice(request.getPrice());
+    variant.setSalePrice(request.getSalePrice());
+    variant.setStockQty(request.getStockQty());
+    variant.setOptionValues(getOptionValues(request.getOptionValueIds()));
+    variant.setAssets(getAssets(request.getAssetIds()));
+
+    return modelMapper.map(
+        productVariantRepository.save(variant), ProductVariantResponse.class);
+  }
+
+  private Set<OptionValue> getOptionValues(Collection<Long> optionValueIds) {
+    if (optionValueIds == null || optionValueIds.isEmpty()) {
+      return new HashSet<>();
+    }
+
+    Set<OptionValue> optionValues = new HashSet<>(optionValueRepository.findAllById(optionValueIds));
+    if (optionValues.size() != new HashSet<>(optionValueIds).size()) {
+      throw new BadRequestException("One or more variant option values were not found");
+    }
+    return optionValues;
+  }
+
+  private Set<Asset> getAssets(Collection<Long> assetIds) {
+    if (assetIds == null || assetIds.isEmpty()) {
+      return new HashSet<>();
+    }
+
+    Set<Asset> assets = new HashSet<>(assetRepository.findAllById(assetIds));
+    if (assets.size() != new HashSet<>(assetIds).size()) {
+      throw new BadRequestException("One or more assets were not found");
+    }
+    return assets;
   }
 }

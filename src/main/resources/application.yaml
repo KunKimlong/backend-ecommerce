@@ -7,9 +7,9 @@ spring:
   application:
     jwt:
       secret-key: ${SECRET_KEY}
-      access-toke-exp: ${ACCESS_TOKEN_EXP}
-      refresh-toke-exp: ${ACCESS_TOKEN_EXP}
-    name: ${APP_NAME:backend-ecommerce}
+      access-token-exp: ${ACCESS_TOKEN_EXP}
+      refresh-token-exp: ${ACCESS_TOKEN_EXP}
+    name: ${APPLICATION_NAME}
     admin-generate:
       email: ${ADMIN_EMAIL}
       password: ${ADMIN_PASSWORD}
@@ -34,6 +34,8 @@ spring:
 logging:
   level:
     root: info
+  file:
+    name: ${LOG_FILE:./file-storage/logs/backend.log}
 
 app:
-  file-storage-path: ./file-storage
+  file-storage-path: ${FILE_PATH:./file-storage}

@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.employee;
 
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -9,11 +10,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.domain.Specification;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
-  @Override
-  @EntityGraph(attributePaths = {"user", "asset"})
-  Page<Employee> findAll(Pageable pageable);
-
-  @EntityGraph(attributePaths = {"user", "asset"})
-  Page<Employee> findAll(Specification<Employee> spec, Pageable pageable);
+public interface EmployeeRepository
+    extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
+  @EntityGraph(attributePaths = {"user"})
+  @NonNull
+  Page<Employee> findAll(Specification<Employee> spec, @NonNull Pageable pageable);
 }

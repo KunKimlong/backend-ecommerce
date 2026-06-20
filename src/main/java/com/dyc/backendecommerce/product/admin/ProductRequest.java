@@ -1,15 +1,15 @@
 package com.dyc.backendecommerce.product.admin;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -22,16 +22,11 @@ public class ProductRequest {
 
   private String description;
 
-  @NotNull private BigDecimal importPrice;
-
   @NotNull private BigDecimal salePrice;
-
-  @Min(0)
-  private int stockQty;
 
   @NotNull private Long categoryId;
 
-  private Set<Long> colorIds;
-
   private Set<Long> assetIds;
+
+  @Valid private List<ProductVariantRequest> variants;
 }

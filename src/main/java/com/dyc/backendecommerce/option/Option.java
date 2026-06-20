@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.color;
+package com.dyc.backendecommerce.option;
 
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Entity;
@@ -13,16 +13,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "colors")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Color  extends Auditable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String code;
+@Table(name = "options")
+public class Option extends Auditable {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  private String name;
 }

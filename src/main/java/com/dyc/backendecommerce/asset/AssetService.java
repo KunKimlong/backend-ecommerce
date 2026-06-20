@@ -51,7 +51,7 @@ public class AssetService {
     return assetData;
   }
 
-  private String getExtension(String filename) {
+  private static String getExtension(String filename) {
     return filename.substring(filename.lastIndexOf(".") + 1);
   }
 
@@ -60,7 +60,7 @@ public class AssetService {
   }
 
   public ResponseData<AssetResponse> getAssetResponse(Pageable pageable) {
-    Page<Asset> assets = assetRepository.findAll(pageable);
+    Page<Asset> assets = assetRepository.findAllByAssetType(AssetType.PRODUCT, pageable);
     List<AssetResponse> assetDatas =
         assets.getContent().stream()
             .map(asset -> modelMapper.map(asset, AssetResponse.class))

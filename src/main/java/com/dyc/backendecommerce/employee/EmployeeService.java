@@ -3,26 +3,24 @@ package com.dyc.backendecommerce.employee;
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.asset.AssetService;
-import com.dyc.backendecommerce.auth.AuthService;
 import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.enums.UserRole;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.user.User;
 import com.dyc.backendecommerce.user.UserRepository;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
 
 @Transactional
 @Service
@@ -31,7 +29,6 @@ public class EmployeeService {
   private static final String NOT_FOUND_MESSAGE = "Employees not found in list";
 
   private final EmployeeRepository employeeRepository;
-  private final AuthService authService;
   private final ModelMapper modelMapper;
 
   private final PasswordEncoder passwordEncoder;
@@ -48,7 +45,9 @@ public class EmployeeService {
     // filter employee by name and join date
     Specification<Employee> spec =
         Specification.allOf(
-            EmployeeSpecification.hasName(name), EmployeeSpecification.hasJoinDate(joinDate));
+            EmployeeSpecification.hasName(name),
+            EmployeeSpecification.hasJoinDate(joinDate),
+            EmployeeSpecification.roleEmployee());
 
     Page<Employee> employees = getAllEmployee(spec, pageable);
     List<EmployeeData> employeeData =
@@ -81,12 +80,13 @@ public class EmployeeService {
     userRepository.save(user);
 
     Asset asset = uploadFileIfPresent(file);
+    user.setAsset(asset);
+    userRepository.save(user);
 
     Employee employee =
         Employee.builder()
             .phone(request.getPhone())
             .joinDate(request.getJoinDate())
-            .asset(asset)
             .user(user)
             .build();
 
@@ -110,15 +110,15 @@ public class EmployeeService {
 
     // Handle image upload: if a new file is provided, delete old asset and upload new one
     if (file != null && !file.isEmpty()) {
-      if (employee.getAsset() != null) {
+      if (user.getAsset() != null) {
         try {
-          assetService.delete(employee.getAsset().getUuid());
+          assetService.delete(user.getAsset().getUuid());
         } catch (IOException e) {
           throw new InternalServerError("Failed to delete old image");
         }
       }
       Asset newAsset = uploadFileIfPresent(file);
-      employee.setAsset(newAsset);
+      user.setAsset(newAsset);
     }
 
     employee.setPhone(request.getPhone());
@@ -143,10 +143,10 @@ public class EmployeeService {
       dto.setLastName(employee.getUser().getLastName());
       dto.setEmail(employee.getUser().getEmail());
       dto.setGender(employee.getUser().getGender());
-    }
-    if (employee.getAsset() != null) {
-      dto.setAssetId(employee.getAsset().getId());
-      dto.setImageUrl("/api/asset/image/" + employee.getAsset().getUuid());
+
+      if (employee.getUser().getAsset() != null) {
+        dto.setImageUrl("/api/asset/image/" + employee.getUser().getAsset().getUuid());
+      }
     }
     return dto;
   }
@@ -161,5 +161,9 @@ public class EmployeeService {
     } catch (IOException e) {
       throw new InternalServerError("Failed to upload image");
     }
+  }
+
+  public Employee save(Employee employee) {
+    return employeeRepository.save(employee);
   }
 }

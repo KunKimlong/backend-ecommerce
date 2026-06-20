@@ -1,6 +1,7 @@
 package com.dyc.backendecommerce.banner;
 
 import com.dyc.backendecommerce.asset.Asset;
+import com.dyc.backendecommerce.banner_type.BannerType;
 import com.dyc.backendecommerce.product.Product;
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Column;
@@ -37,8 +38,9 @@ public class Banner extends Auditable {
   @Column(name = "header_label", length = 50)
   private String headerLabel;
 
-  @Column(name = "type", length = 50)
-  private String type;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "banner_type_id")
+  private BannerType bannerType;
 
   @Column(name = "description", columnDefinition = "text")
   private String description;
@@ -59,4 +61,7 @@ public class Banner extends Auditable {
 
   @Column(name = "end_at")
   private LocalDate endAt;
+
+  @Column(name = "banner_order")
+  private Integer order;
 }

@@ -1,11 +1,13 @@
 package com.dyc.backendecommerce.auth;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
-class AuthResponse {
+public class AuthResponse {
     private String accessToken;
     private int expiresIn;
     private String refreshToken;

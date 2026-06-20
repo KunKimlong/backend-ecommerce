@@ -2,7 +2,6 @@ package com.dyc.backendecommerce.product.store;
 
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.category.CategoryData;
-import com.dyc.backendecommerce.color.ColorData;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -20,10 +19,8 @@ public class ProductData {
   private Long id;
   private String name;
   private String description;
-  private BigDecimal importPrice;
   private BigDecimal salePrice;
-  private int stockQty;
   private CategoryData category;
-  private Set<ColorData> colors;
+  private Set<ProductVariantData> variants;
   private Set<AssetData> assets;
 }
