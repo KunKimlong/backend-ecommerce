@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,17 +20,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
   private final JwtFilter jwtFilter;
+
   private static final String[] PUBLIC_API = {
-    "/api/auth/**",
-    "/v3/api-docs/**",
-    "/swagger-ui.html",
-    "/swagger-ui/**",
-    "/swagger-ui/index.html",
-    "/api/store/**",
+    "/api/auth/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**",
+    "/swagger-ui/index.html", "/api/store/**", "/api/asset/image/**",
   };
 
   @Bean
@@ -37,7 +36,13 @@ public class SecurityConfig {
     http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(
-            auth -> auth.requestMatchers(PUBLIC_API).permitAll().anyRequest().authenticated())
+            auth -> {
+              auth.requestMatchers(PUBLIC_API).permitAll();
+              for (var r : EndpointPermissions.RULES) {
+                auth.requestMatchers(r.method(), r.path()).hasAuthority(r.authority());
+              }
+              auth.anyRequest().authenticated();
+            })
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

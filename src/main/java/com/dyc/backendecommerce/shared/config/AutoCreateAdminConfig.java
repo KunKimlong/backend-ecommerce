@@ -1,12 +1,12 @@
 package com.dyc.backendecommerce.shared.config;
 
-import com.dyc.backendecommerce.employee.Employee;
-import com.dyc.backendecommerce.employee.EmployeeService;
+import com.dyc.backendecommerce.role.Role;
+import com.dyc.backendecommerce.role.RoleRepository;
 import com.dyc.backendecommerce.shared.enums.Gender;
 import com.dyc.backendecommerce.shared.enums.UserRole;
 import com.dyc.backendecommerce.user.User;
-import com.dyc.backendecommerce.user.UserRepository;
 import com.dyc.backendecommerce.user.UserService;
+import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class AutoCreateAdminConfig implements CommandLineRunner {
 
   private final UserService userService;
-  private final EmployeeService employeeService;
+  private final RoleRepository roleRepository;
 
   @Value("${spring.application.admin-generate.email}")
   private String email;
@@ -48,10 +48,26 @@ public class AutoCreateAdminConfig implements CommandLineRunner {
               .role(UserRole.ADMIN)
               .gender(Gender.MALE)
               .build();
-      var user = userService.save(request);
-      var employee = Employee.builder().user(user).build();
-      employeeService.save(employee);
+      User created = userService.save(request);
+
+      Role adminRole = roleRepository.findByName("ADMIN").orElse(null);
+      if (adminRole != null) {
+        var roles = new HashSet<Role>();
+        roles.add(adminRole);
+        created.setRoles(roles);
+        userService.save(created);
+      }
+
       log.info("Admin created");
+    } else if (existUser.getRoles() == null || existUser.getRoles().isEmpty()) {
+      Role adminRole = roleRepository.findByName("ADMIN").orElse(null);
+      if (adminRole != null) {
+        var roles = new HashSet<Role>();
+        roles.add(adminRole);
+        existUser.setRoles(roles);
+        userService.save(existUser);
+        log.info("Assigned ADMIN role to existing admin user");
+      }
     }
   }
 }

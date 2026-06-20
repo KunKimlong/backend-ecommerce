@@ -1,9 +1,8 @@
-package com.dyc.backendecommerce.employee;
+package com.dyc.backendecommerce.role;
 
-import java.time.LocalDate;
-
+import com.dyc.backendecommerce.permission.PermissionData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
-import com.dyc.backendecommerce.shared.enums.Gender;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +14,11 @@ import lombok.Setter;
 @Setter
 @Getter
 @Builder
-public class EmployeeData {
+public class RoleResponse {
   private Long id;
-  private String firstName;
-  private String lastName;
-  private String email;
-  private Gender gender;
-  private String phone;
-  private LocalDate joinDate;
-  private String imageUrl;
+  private String name;
+  private String description;
+  private List<PermissionData> permissions;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }
