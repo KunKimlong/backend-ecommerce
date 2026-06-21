@@ -1,7 +1,10 @@
 package com.dyc.backendecommerce.shared.config;
 
 import java.util.Arrays;
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +26,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+  @Value("#{T(java.util.Arrays).asList('${spring.application.cors-urls}'.split(','))}")
+  private List<String> corsUrls;
   private final JwtFilter jwtFilter;
 
   private static final String[] PUBLIC_API = {
@@ -53,8 +57,7 @@ public class SecurityConfig {
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(
-            Arrays.asList("http://localhost:3000", "http://localhost:3001"));
+    configuration.setAllowedOrigins(corsUrls);
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-XSRF-TOKEN"));
     configuration.setExposedHeaders(Arrays.asList("Authorization"));

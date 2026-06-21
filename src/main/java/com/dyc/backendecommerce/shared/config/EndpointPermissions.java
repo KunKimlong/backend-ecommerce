@@ -65,11 +65,8 @@ public final class EndpointPermissions {
           new Rule(GET, "/api/admin/roles/**", ROLE_READ),
           new Rule(PUT, "/api/admin/roles/**", ROLE_UPDATE),
           new Rule(DELETE, "/api/admin/roles/**", ROLE_DELETE),
-          // Permissions
-          new Rule(POST, "/api/admin/permissions", ROLE_CREATE),
+          // Permissions (read-only)
           new Rule(GET, "/api/admin/permissions/**", ROLE_READ),
-          new Rule(PUT, "/api/admin/permissions/**", ROLE_UPDATE),
-          new Rule(DELETE, "/api/admin/permissions/**", ROLE_DELETE),
           // Role Assignment
           new Rule(PUT, "/api/admin/users/*/roles", ROLE_UPDATE));
 }

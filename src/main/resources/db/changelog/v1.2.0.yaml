@@ -1,8 +1,63 @@
 databaseChangeLog:
   - context: v1.2.0
   - changeSet:
+      id: 1774973992378-1
+      author: Punlith Kay
+      changes:
+        - createTable:
+            tableName: stores
+            columns:
+             - column:
+                 name: id
+                 type: BIGINT
+                 autoIncrement: true
+                 constraints:
+                   primaryKey: true
+             - column:
+                 name: asset_id
+                 type: BIGINT
+                 constraints:
+                   foreignKeyName: fk_store_asset
+                   references: assets(id)
+             - column:
+                 name: name
+                 type: varchar(255)
+             - column:
+                 name: description
+                 type: text
+             - column:
+                 name: location
+                 type: varchar(255)
+             - column:
+                 name: support_email
+                 type: varchar(255)
+             - column:
+                 name: support_phone_number
+                 type: varchar(255)
+             - column:
+                 name: is_active
+                 type: boolean
+             - column:
+                 name: created_at
+                 type: timestamp
+             - column:
+                 name: created_by
+                 type: bigint
+                 constraints:
+                   foreignKeyName: fk_store_created_by
+                   references: users(id)
+             - column:
+                 name: updated_at
+                 type: timestamp
+             - column:
+                 name: updated_by
+                 type: bigint
+                 constraints:
+                   foreignKeyName: fk_store_updated_by
+                   references: users(id)
+  - changeSet:
       id: 1780930380733-1
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - dropTable:
             tableName: product_colors
@@ -10,7 +65,7 @@ databaseChangeLog:
             tableName: colors
   - changeSet:
       id: 1780930380733-2
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - dropColumn:
             tableName: products
@@ -21,7 +76,7 @@ databaseChangeLog:
                   name: stock_qty
   - changeSet:
       id: 1780930380733-3
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: options
@@ -57,7 +112,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1780930380733-4
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: option_values
@@ -101,7 +156,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1780930380733-5
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: product_variants
@@ -154,7 +209,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1780930380733-6
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: product_variant_option_values
@@ -189,7 +244,7 @@ databaseChangeLog:
             onDelete: CASCADE
   - changeSet:
       id: 1780930380733-7
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: product_variant_assets
@@ -224,7 +279,7 @@ databaseChangeLog:
             onDelete: CASCADE
   - changeSet:
       id: 1780930380733-8
-      author: antigravity
+      author: Kimlong KUN
       changes:
         - addColumn:
             tableName: banners

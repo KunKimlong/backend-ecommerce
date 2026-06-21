@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class PermissionService {
 
   public static final String NOT_FOUND_MESSAGE = "Permission not found";
@@ -39,35 +39,5 @@ public class PermissionService {
             .findById(id)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
     return modelMapper.map(permission, PermissionResponse.class);
-  }
-
-  public PermissionResponse createPermission(PermissionRequest request) {
-    Permission permission =
-        Permission.builder()
-            .name(request.getName())
-            .description(request.getDescription())
-            .module(request.getModule())
-            .build();
-    return modelMapper.map(permissionRepository.save(permission), PermissionResponse.class);
-  }
-
-  public PermissionResponse updatePermission(Long id, PermissionRequest request) {
-    Permission permission =
-        permissionRepository
-            .findById(id)
-            .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
-
-    permission.setName(request.getName());
-    permission.setDescription(request.getDescription());
-    permission.setModule(request.getModule());
-
-    return modelMapper.map(permissionRepository.save(permission), PermissionResponse.class);
-  }
-
-  public void deletePermission(Long id) {
-    if (!permissionRepository.existsById(id)) {
-      throw new NotFoundException(NOT_FOUND_MESSAGE);
-    }
-    permissionRepository.deleteById(id);
   }
 }

@@ -7,12 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,23 +34,5 @@ public class PermissionController {
   @GetMapping("/{id}")
   public ResponseEntity<PermissionResponse> getPermissionById(@PathVariable Long id) {
     return new ResponseEntity<>(permissionService.getPermissionById(id), HttpStatus.OK);
-  }
-
-  @PostMapping
-  public ResponseEntity<PermissionResponse> createPermission(
-      @RequestBody PermissionRequest request) {
-    return new ResponseEntity<>(permissionService.createPermission(request), HttpStatus.CREATED);
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<PermissionResponse> updatePermission(
-      @PathVariable Long id, @RequestBody PermissionRequest request) {
-    return new ResponseEntity<>(permissionService.updatePermission(id, request), HttpStatus.OK);
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deletePermission(@PathVariable Long id) {
-    permissionService.deletePermission(id);
-    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

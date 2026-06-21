@@ -100,8 +100,15 @@ public class AuthService {
 
     var user =
         userRepository
-            .findById(userDetails.getId())
+            .findWithRolesById(userDetails.getId())
             .orElseThrow(() -> new RuntimeException("User not found"));
+
+    var permissions =
+        user.getRoles().stream()
+            .flatMap(role -> role.getPermissions().stream())
+            .map(com.dyc.backendecommerce.permission.Permission::getName)
+            .distinct()
+            .toList();
 
     var imageUrl = user.getAsset() != null ? "/media/image/" + user.getAsset().getUuid() : "";
     UserResponse response =
@@ -112,7 +119,10 @@ public class AuthService {
             .email(user.getEmail())
             .role(user.getRole())
             .gender(user.getGender())
+            .phone(user.getPhone())
+            .joinDate(user.getJoinDate())
             .imageUrl(imageUrl)
+            .permissions(permissions)
             .build();
 
     return ResponseEntity.ok(response);

@@ -2,7 +2,7 @@ databaseChangeLog:
   - context: v1.1.0
   - changeSet:
       id: 1773758068045-1
-      author: KimLong KUN
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: banners
@@ -66,7 +66,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1774685278918-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: banner_types
@@ -81,13 +81,13 @@ databaseChangeLog:
                   type: varchar(100)
   - changeSet:
       id: 1774685278918-2
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/banner_default_value.sql
   - changeSet:
       id: 1774685278918-3
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - dropColumn:
             tableName: banners
@@ -105,7 +105,7 @@ databaseChangeLog:
                     references: banner_types(id)
   - changeSet:
       id: 1776324769392-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - addForeignKeyConstraint:
             baseTableName: products
@@ -115,25 +115,25 @@ databaseChangeLog:
             referencedColumnNames: id
   - changeSet:
       id: 1776324769392-2
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/update_assets_set_asset_type_product_for_null.sql
   - changeSet:
       id: 1776324769392-3
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/insert_non_exist_admin_in_table_employees.sql
   - changeSet:
       id: 1776324769392-4
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/update_numeric_value_in_gender_to_string.sql
   - changeSet:
       id: 1776410973318-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - addColumn:
             tableName: users
@@ -146,13 +146,13 @@ databaseChangeLog:
                     references: assets(id)
   - changeSet:
       id: 1776410973318-2
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/migrate_asset_id_to_users.sql
   - changeSet:
       id: 1776410973318-3
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - dropForeignKeyConstraint:
             baseTableName: employees

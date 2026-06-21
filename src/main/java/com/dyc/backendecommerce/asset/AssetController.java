@@ -5,8 +5,6 @@ import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.AllArgsConstructor;

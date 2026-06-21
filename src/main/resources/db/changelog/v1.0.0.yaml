@@ -2,7 +2,7 @@ databaseChangeLog:
   - context: v1.0
   - changeSet:
       id: 1760244114045-1
-      author: kimlong kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: users
@@ -77,7 +77,7 @@ databaseChangeLog:
 
   - changeSet:
       id: 1767522404114-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: categories
@@ -111,7 +111,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1769352935207-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: colors
@@ -150,7 +150,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1769352935207-2
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: assets
@@ -184,7 +184,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1769352935207-3
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: products
@@ -235,7 +235,7 @@ databaseChangeLog:
                     references: users(id)
   - changeSet:
       id: 1770386258567-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - addColumn:
             tableName: assets
@@ -245,7 +245,7 @@ databaseChangeLog:
                   type: varchar(255)
   - changeSet:
       id: 1771779571946-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - addColumn:
             tableName: assets
@@ -345,7 +345,7 @@ databaseChangeLog:
                     references: assets(id)
   - changeSet:
       id: 1772204014911-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: product_assets
@@ -398,7 +398,7 @@ databaseChangeLog:
                   name: asset_id
   - changeSet:
       id: 1772337025199-1
-      author: KimLong Kun
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: product_colors

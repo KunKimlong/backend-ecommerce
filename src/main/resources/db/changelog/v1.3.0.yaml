@@ -1,8 +1,8 @@
 databaseChangeLog:
   - context: v1.3.0
   - changeSet:
-      id: 1790000000000-1
-      author: antigravity
+      id: 1782056415846-1
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: roles
@@ -41,8 +41,8 @@ databaseChangeLog:
                     foreignKeyName: fk_roles_updated_by
                     references: users(id)
   - changeSet:
-      id: 1790000000000-2
-      author: antigravity
+      id: 1782056415846-2
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: permissions
@@ -84,8 +84,8 @@ databaseChangeLog:
                     foreignKeyName: fk_permissions_updated_by
                     references: users(id)
   - changeSet:
-      id: 1790000000000-3
-      author: antigravity
+      id: 1782056415846-3
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: role_permissions
@@ -119,8 +119,8 @@ databaseChangeLog:
             constraintName: fk_rp_permission
             onDelete: CASCADE
   - changeSet:
-      id: 1790000000000-4
-      author: antigravity
+      id: 1782056415846-4
+      author: Kimlong KUN
       changes:
         - createTable:
             tableName: user_roles
@@ -154,20 +154,20 @@ databaseChangeLog:
             constraintName: fk_ur_role
             onDelete: CASCADE
   - changeSet:
-      id: 1790000000000-5
-      author: antigravity
+      id: 1782056415846-5
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/insert_rbac_default_data.sql
   - changeSet:
-      id: 1790000000000-6
-      author: antigravity
+      id: 1782056415846-6
+      author: Kimlong KUN
       changes:
         - sqlFile:
             path: ./db/sql/migrate_existing_user_roles.sql
   - changeSet:
-      id: 1795000000000-1
-      author: antigravity
+      id: 1782056415846-7
+      author: Kimlong KUN
       changes:
         - addColumn:
             tableName: users
@@ -179,8 +179,8 @@ databaseChangeLog:
                   name: join_date
                   type: date
   - changeSet:
-      id: 1795000000000-2
-      author: antigravity
+      id: 1782056415846-8
+      author: Kimlong KUN
       changes:
         - sql:
             sql: |
@@ -190,8 +190,8 @@ databaseChangeLog:
               FROM employees e
               WHERE e.user_id = u.id;
   - changeSet:
-      id: 1795000000000-3
-      author: antigravity
+      id: 1782056415846-9
+      author: Kimlong KUN
       changes:
         - dropTable:
             tableName: employees
