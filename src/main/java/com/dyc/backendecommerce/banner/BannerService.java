@@ -36,8 +36,13 @@ public class BannerService {
   private final AssetService assetService;
 
   @Transactional(readOnly = true)
-  public ResponseData<BannerResponse> getAllBanners(Pageable pageable) {
-    Page<Banner> banners = bannerRepository.findAll(pageable);
+  public ResponseData<BannerResponse> getAllBanners(String label, Pageable pageable) {
+    Page<Banner> banners;
+    if (label != null && !label.isBlank()) {
+      banners = bannerRepository.findByLabelContainingIgnoreCase(label, pageable);
+    } else {
+      banners = bannerRepository.findAll(pageable);
+    }
     List<BannerResponse> bannerResponses =
         banners.getContent().stream().map(this::mapToBannerResponse).toList();
 
@@ -139,6 +144,7 @@ public class BannerService {
   private BannerResponse mapToBannerResponse(Banner banner) {
     BannerResponse response = modelMapper.map(banner, BannerResponse.class);
     if (banner.getBannerType() != null) {
+      response.setBannerTypeId(banner.getBannerType().getId());
       response.setType(banner.getBannerType().getName());
     }
     if (banner.getAsset() != null) {

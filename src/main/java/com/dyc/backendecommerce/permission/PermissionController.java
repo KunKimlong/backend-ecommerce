@@ -22,13 +22,14 @@ public class PermissionController {
 
   @GetMapping
   public ResponseEntity<ResponseData<PermissionResponse>> getPermissions(
+      @RequestParam(required = false) String name,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "20") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(permissionService.getAllPermissions(pageable), HttpStatus.OK);
+    return new ResponseEntity<>(permissionService.getAllPermissions(name, pageable), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")

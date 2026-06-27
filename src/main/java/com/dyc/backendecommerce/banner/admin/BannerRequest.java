@@ -20,6 +20,7 @@ public class BannerRequest {
     private String buttonName;
     private Long productId;
     private Long assetId;
+    private Integer order;
     private LocalDate startAt;
     private LocalDate endAt;
 }

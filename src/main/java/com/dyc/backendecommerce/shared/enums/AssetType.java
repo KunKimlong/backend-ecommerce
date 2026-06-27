@@ -4,5 +4,6 @@ public enum AssetType {
   USER,
   PRODUCT,
   STORE,
-  BANNER
+  BANNER,
+  CATEGORY
 }

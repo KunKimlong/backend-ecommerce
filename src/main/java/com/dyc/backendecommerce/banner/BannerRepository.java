@@ -12,4 +12,8 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
   @NonNull
   @EntityGraph(attributePaths = {"product"})
   Page<Banner> findAll(@NonNull Pageable pageable);
+
+  @NonNull
+  @EntityGraph(attributePaths = {"product"})
+  Page<Banner> findByLabelContainingIgnoreCase(@NonNull String label, @NonNull Pageable pageable);
 }

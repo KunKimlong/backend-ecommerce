@@ -33,6 +33,7 @@ public class SecurityConfig {
   private static final String[] PUBLIC_API = {
     "/api/auth/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**",
     "/swagger-ui/index.html", "/api/store/**", "/api/asset/image/**",
+    "/api/admin/dashboard",
   };
 
   @Bean

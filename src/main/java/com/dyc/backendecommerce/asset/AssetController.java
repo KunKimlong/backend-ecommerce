@@ -50,13 +50,14 @@ public class AssetController {
 
   @GetMapping
   public ResponseEntity<ResponseData<AssetResponse>> getAsset(
+      @RequestParam(required = false) String name,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(assetService.getAssetResponse(pageable), HttpStatus.OK);
+    return new ResponseEntity<>(assetService.getAssetResponse(name, pageable), HttpStatus.OK);
   }
 
   @GetMapping("/image/{uuid}")

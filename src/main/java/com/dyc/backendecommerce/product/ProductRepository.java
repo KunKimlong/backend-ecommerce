@@ -25,4 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
           LocalDateTime date,
           Pageable pageable
   );
+
+  @NonNull
+  @EntityGraph(attributePaths = {"category", "variants", "variants.optionValues", "variants.optionValues.option", "variants.assets", "assets"})
+  Page<Product> findByNameContainingIgnoreCase(@NonNull String name, @NonNull Pageable pageable);
 }

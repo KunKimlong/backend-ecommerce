@@ -1,6 +1,6 @@
 package com.dyc.backendecommerce.category;
 
-
+import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +16,7 @@ import lombok.Setter;
 public class CategoryResponse {
   private Long id;
   private String name;
+  private AssetData asset;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }

@@ -47,7 +47,4 @@ public class Store extends Auditable {
 
   @Column(name = "support_phone_number", length = 255)
   private String supportPhoneNumber;
-
-  @Column(name = "is_active")
-  private Boolean isActive;
 }

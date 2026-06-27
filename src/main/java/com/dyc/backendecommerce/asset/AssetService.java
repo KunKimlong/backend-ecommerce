@@ -59,8 +59,13 @@ public class AssetService {
     return assetRepository.findByUuid(uuid);
   }
 
-  public ResponseData<AssetResponse> getAssetResponse(Pageable pageable) {
-    Page<Asset> assets = assetRepository.findAllByAssetType(AssetType.PRODUCT, pageable);
+  public ResponseData<AssetResponse> getAssetResponse(String name, Pageable pageable) {
+    Page<Asset> assets;
+    if (name != null && !name.isBlank()) {
+      assets = assetRepository.findAllByAssetTypeAndNameContainingIgnoreCase(AssetType.PRODUCT, name, pageable);
+    } else {
+      assets = assetRepository.findAllByAssetType(AssetType.PRODUCT, pageable);
+    }
     List<AssetResponse> assetDatas =
         assets.getContent().stream()
             .map(asset -> modelMapper.map(asset, AssetResponse.class))

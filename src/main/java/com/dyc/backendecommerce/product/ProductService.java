@@ -79,8 +79,13 @@ public class ProductService {
     return modelMapper.map(productRepository.save(product), ProductResponse.class);
   }
 
-  public ResponseData<ProductResponse> getAllProducts(Pageable pageable) {
-    Page<Product> products = productRepository.findAll(pageable);
+  public ResponseData<ProductResponse> getAllProducts(String name, Pageable pageable) {
+    Page<Product> products;
+    if (name != null && !name.isBlank()) {
+      products = productRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      products = productRepository.findAll(pageable);
+    }
     List<ProductResponse> productDataList =
         products.stream().map(product -> modelMapper.map(product, ProductResponse.class)).toList();
     return ResponseData.<ProductResponse>builder()

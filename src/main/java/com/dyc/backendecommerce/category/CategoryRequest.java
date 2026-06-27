@@ -12,5 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryRequest {
-    String name;
+    private String name;
+    private Long assetId;
 }

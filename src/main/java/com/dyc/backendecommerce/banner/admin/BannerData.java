@@ -18,11 +18,13 @@ public class BannerData {
   private Long id;
   private String label;
   private String headerLabel;
-  private String type;
-  private String description;
+    private Long bannerTypeId;
+    private String type;
+    private String description;
   private String buttonName;
   private ProductResponse product;
   private AssetData asset;
-  private LocalDateTime startAt;
-  private LocalDateTime endAt;
+    private Integer order;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
 }

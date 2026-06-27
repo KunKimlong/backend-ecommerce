@@ -27,13 +27,14 @@ public class RoleController {
 
   @GetMapping
   public ResponseEntity<ResponseData<RoleResponse>> getRoles(
+      @RequestParam(required = false) String name,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(roleService.getAllRoles(pageable), HttpStatus.OK);
+    return new ResponseEntity<>(roleService.getAllRoles(name, pageable), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")

@@ -25,8 +25,13 @@ public class RoleService {
   private final PermissionRepository permissionRepository;
   private final ModelMapper modelMapper;
 
-  public ResponseData<RoleResponse> getAllRoles(Pageable pageable) {
-    Page<Role> roles = roleRepository.findAll(pageable);
+  public ResponseData<RoleResponse> getAllRoles(String name, Pageable pageable) {
+    Page<Role> roles;
+    if (name != null && !name.isBlank()) {
+      roles = roleRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      roles = roleRepository.findAll(pageable);
+    }
     List<RoleResponse> roleResponses =
         roles.getContent().stream().map(this::mapToRoleResponse).toList();
 

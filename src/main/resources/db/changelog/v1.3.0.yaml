@@ -195,3 +195,25 @@ databaseChangeLog:
       changes:
         - dropTable:
             tableName: employees
+  - changeSet:
+      id: 1782400991320-1
+      author: Kimlong KUN
+      changes:
+        - dropColumn:
+            tableName: stores
+            columns:
+              - column:
+                  name: is_active
+  - changeSet:
+      id: 1782400991320-2
+      author: Kimlong KUN
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: asset_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_categories_assets
+

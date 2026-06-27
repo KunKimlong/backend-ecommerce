@@ -19,11 +19,13 @@ public class BannerResponse {
   private Long id;
   private String label;
   private String headerLabel;
+  private Long bannerTypeId;
   private String type;
   private String description;
   private String buttonName;
   private ProductData product;
   private AssetData asset;
+  private Integer order;
   private LocalDate startAt;
   private LocalDate endAt;
   private AuditableResult createdBy;

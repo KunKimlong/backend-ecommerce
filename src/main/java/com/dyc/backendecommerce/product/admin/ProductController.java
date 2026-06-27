@@ -32,13 +32,14 @@ public class ProductController {
 
   @GetMapping
   public ResponseEntity<ResponseData<ProductResponse>> getProduct(
+      @RequestParam(required = false) String name,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(productService.getAllProducts(pageable), HttpStatus.OK);
+    return new ResponseEntity<>(productService.getAllProducts(name, pageable), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")

@@ -29,9 +29,6 @@ public class AutoCreateStoreConfig implements CommandLineRunner {
   @Value("${spring.application.store-generate.support-phone-number}")
   private String supportPhoneNumber;
 
-  @Value("${spring.application.store-generate.is-active}")
-  private Boolean isActive;
-
   @Override
   public void run(String... args) {
     if (storeRepository.count() > 0) {
@@ -45,7 +42,6 @@ public class AutoCreateStoreConfig implements CommandLineRunner {
             .location(location)
             .supportEmail(supportEmail)
             .supportPhoneNumber(supportPhoneNumber)
-            .isActive(isActive)
             .build();
 
     storeRepository.save(store);

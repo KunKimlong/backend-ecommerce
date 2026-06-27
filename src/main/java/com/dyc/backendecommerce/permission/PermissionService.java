@@ -20,8 +20,13 @@ public class PermissionService {
   private final PermissionRepository permissionRepository;
   private final ModelMapper modelMapper;
 
-  public ResponseData<PermissionResponse> getAllPermissions(Pageable pageable) {
-    Page<Permission> permissions = permissionRepository.findAll(pageable);
+  public ResponseData<PermissionResponse> getAllPermissions(String name, Pageable pageable) {
+    Page<Permission> permissions;
+    if (name != null && !name.isBlank()) {
+      permissions = permissionRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      permissions = permissionRepository.findAll(pageable);
+    }
     List<PermissionResponse> permissionResponses =
         permissions.getContent().stream().map(p -> modelMapper.map(p, PermissionResponse.class)).toList();
 

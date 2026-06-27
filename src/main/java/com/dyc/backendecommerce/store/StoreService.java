@@ -68,7 +68,6 @@ public class StoreService {
     store.setLocation(request.getLocation());
     store.setSupportEmail(request.getSupportEmail());
     store.setSupportPhoneNumber(request.getSupportPhoneNumber());
-    store.setIsActive(request.getIsActive());
 
     storeRepository.save(store);
     return mapToStoreResponse(store);

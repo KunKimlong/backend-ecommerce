@@ -13,4 +13,6 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     Asset findByUuid(UUID uuid);
 
     Page<Asset> findAllByAssetType(AssetType assetType, Pageable pageable);
+
+    Page<Asset> findAllByAssetTypeAndNameContainingIgnoreCase(AssetType assetType, String name, Pageable pageable);
 }

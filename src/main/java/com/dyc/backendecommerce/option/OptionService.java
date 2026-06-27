@@ -24,8 +24,13 @@ public class OptionService {
   }
 
   @Transactional(readOnly = true)
-  public ResponseData<OptionResponse> getAllOptions(Pageable pageable) {
-    Page<Option> options = getAllOptionsPage(pageable);
+  public ResponseData<OptionResponse> getAllOptions(String name, Pageable pageable) {
+    Page<Option> options;
+    if (name != null && !name.isBlank()) {
+      options = optionRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      options = getAllOptionsPage(pageable);
+    }
     List<OptionResponse> optionResponses =
         options.getContent().stream()
             .map(option -> modelMapper.map(option, OptionResponse.class))
