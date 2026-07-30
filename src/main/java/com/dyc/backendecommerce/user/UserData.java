@@ -19,6 +19,7 @@ public class UserData {
   private String lastName;
   private String email;
   private Gender gender;
+  private boolean active;
   private String phone;
   private LocalDate joinDate;
   private String imageUrl;

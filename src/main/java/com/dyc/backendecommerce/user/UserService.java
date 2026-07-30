@@ -79,6 +79,7 @@ public class UserService {
             .gender(request.getGender())
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
+            .isActive(true)
             .role(UserRole.EMPLOYEE)
             .phone(request.getPhone())
             .joinDate(request.getJoinDate())
@@ -107,9 +108,12 @@ public class UserService {
     user.setFirstName(request.getFirstName());
     user.setLastName(request.getLastName());
     user.setGender(request.getGender());
-    user.setEmail(request.getEmail());
     user.setPhone(request.getPhone());
     user.setJoinDate(request.getJoinDate());
+
+    if (request.getActive() != null) {
+      user.setActive(request.getActive());
+    }
 
     if (request.getRoleIds() != null) {
       var roles = roleRepository.findAllById(request.getRoleIds());
@@ -131,13 +135,6 @@ public class UserService {
     }
       userRepository.save(user);
     return mapToUserResponse(user);
-  }
-
-  public void deleteUser(Long id) {
-    if (!userRepository.existsById(id)) {
-      throw new NotFoundException(NOT_FOUND_MESSAGE);
-    }
-    userRepository.deleteById(id);
   }
 
   private UserResponse mapToUserResponse(User user) {

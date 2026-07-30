@@ -22,5 +22,6 @@ public class UserRequest {
   private String password;
   private String phone;
   private LocalDate joinDate;
+  private Boolean active;
   private List<Long> roleIds;
 }

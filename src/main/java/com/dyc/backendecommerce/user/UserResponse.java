@@ -1,9 +1,11 @@
 package com.dyc.backendecommerce.user;
 
+import com.dyc.backendecommerce.role.Role;
+import com.dyc.backendecommerce.role.UserRoleData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import com.dyc.backendecommerce.shared.enums.Gender;
-import com.dyc.backendecommerce.shared.enums.UserRole;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +23,8 @@ public class UserResponse {
   private String lastName;
   private String email;
   private Gender gender;
-  private UserRole role;
+  private List<UserRoleData> roles;
+  private boolean active;
   private String phone;
   private LocalDate joinDate;
   private String imageUrl;

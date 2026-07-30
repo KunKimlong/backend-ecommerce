@@ -4,7 +4,6 @@ import com.dyc.backendecommerce.permission.PermissionData;
 import com.dyc.backendecommerce.permission.PermissionRepository;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -80,18 +79,6 @@ public class RoleService {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }
     roleRepository.deleteById(id);
-  }
-
-  public RoleResponse assignPermissions(Long roleId, List<Long> permissionIds) {
-    var role =
-        roleRepository
-            .findById(roleId)
-            .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
-
-    var permissions = permissionRepository.findByIdIn(permissionIds);
-    role.setPermissions(new HashSet<>(permissions));
-
-    return mapToRoleResponse(roleRepository.save(role));
   }
 
   private RoleResponse mapToRoleResponse(Role role) {

@@ -1,7 +1,6 @@
 package com.dyc.backendecommerce.role;
 
 import com.dyc.backendecommerce.permission.PermissionData;
-import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +18,4 @@ public class RoleResponse {
   private String name;
   private String description;
   private List<PermissionData> permissions;
-  private AuditableResult createdBy;
-  private AuditableResult updatedBy;
 }

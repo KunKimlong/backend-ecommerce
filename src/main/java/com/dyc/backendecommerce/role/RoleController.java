@@ -58,10 +58,4 @@ public class RoleController {
     roleService.deleteRole(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
-  @PutMapping("/{id}/permissions")
-  public ResponseEntity<RoleResponse> assignPermissions(
-      @PathVariable Long id, @RequestBody List<Long> permissionIds) {
-    return new ResponseEntity<>(roleService.assignPermissions(id, permissionIds), HttpStatus.OK);
-  }
 }

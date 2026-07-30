@@ -1,7 +1,7 @@
 package com.dyc.backendecommerce.product;
 
 import com.dyc.backendecommerce.asset.Asset;
-import com.dyc.backendecommerce.option.OptionValue;
+import com.dyc.backendecommerce.optionvalue.OptionValue;
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

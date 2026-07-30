@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

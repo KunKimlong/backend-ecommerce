@@ -1,5 +1,6 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
+import com.dyc.backendecommerce.option.OptionData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

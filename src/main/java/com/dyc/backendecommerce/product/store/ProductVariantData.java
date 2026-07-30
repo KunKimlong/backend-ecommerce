@@ -1,7 +1,7 @@
 package com.dyc.backendecommerce.product.store;
 
 import com.dyc.backendecommerce.asset.AssetData;
-import com.dyc.backendecommerce.option.OptionValueData;
+import com.dyc.backendecommerce.optionvalue.OptionValueData;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.AllArgsConstructor;

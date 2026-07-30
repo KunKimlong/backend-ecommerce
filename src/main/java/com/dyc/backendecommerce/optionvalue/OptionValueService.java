@@ -1,5 +1,6 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
+import com.dyc.backendecommerce.option.OptionRepository;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.util.List;

@@ -1,5 +1,6 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
+import com.dyc.backendecommerce.option.OptionResponse;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

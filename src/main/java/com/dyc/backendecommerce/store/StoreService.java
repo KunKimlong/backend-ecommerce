@@ -77,7 +77,7 @@ public class StoreService {
     StoreResponse response = modelMapper.map(store, StoreResponse.class);
     if (store.getAsset() != null) {
       response.setAssetId(store.getAsset().getId());
-      response.setLogoPath("/api/asset/image/" + store.getAsset().getUuid());
+      response.setLogoPath("/image/" + store.getAsset().getUuid());
     }
     return response;
   }

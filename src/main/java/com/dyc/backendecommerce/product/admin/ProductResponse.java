@@ -1,7 +1,7 @@
 package com.dyc.backendecommerce.product.admin;
 
-import com.dyc.backendecommerce.asset.Asset;
-import com.dyc.backendecommerce.category.Category;
+import com.dyc.backendecommerce.asset.AssetData;
+import com.dyc.backendecommerce.category.CategoryData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import java.math.BigDecimal;
 import java.util.Set;
@@ -21,9 +21,9 @@ public class ProductResponse {
   private String name;
   private String description;
   private BigDecimal salePrice;
-  private Category category;
+  private CategoryData category;
   private Set<ProductVariantResponse> variants;
-  private Set<Asset> assets;
+  private Set<AssetData> assets;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }

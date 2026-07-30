@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.role;
 
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,10 +14,12 @@ import org.springframework.data.domain.Pageable;
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
   @EntityGraph(attributePaths = {"permissions"})
+  @NonNull
   List<Role> findAll();
 
   @EntityGraph(attributePaths = {"permissions"})
-  Optional<Role> findById(Long id);
+  @NonNull
+  Optional<Role> findById(@NonNull Long id);
 
   Optional<Role> findByName(String name);
 

@@ -38,14 +38,14 @@ public class AuthService {
   private final UserDetailsService userDetailsService;
 
   public ResponseEntity<AuthResponse> login(AuthRequest request) {
-    User user = userRepository.findByEmail(request.getUsername()).orElse(null);
+    User user = userRepository.findByEmail(request.getEmail()).orElse(null);
     if (user == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
     authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
-    UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+    UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
     String accessToken = jwtUtil.generateAccessToken(userDetails, user);
     String refreshToken = jwtUtil.generateRefreshToken(userDetails);
     ResponseCookie cookie =

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AuthRequest {
     @Schema(defaultValue = "admin@gmail.com")
-    private String username;
+    private String email;
     @Schema(defaultValue = "admin@123")
     private String password;
 }

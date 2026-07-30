@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

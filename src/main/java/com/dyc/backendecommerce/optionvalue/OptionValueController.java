@@ -1,4 +1,4 @@
-package com.dyc.backendecommerce.option;
+package com.dyc.backendecommerce.optionvalue;
 
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
