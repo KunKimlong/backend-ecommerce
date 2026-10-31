@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.permission;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.util.List;
@@ -38,7 +40,7 @@ public class PermissionService {
         .build();
   }
 
-  public PermissionResponse getPermissionById(Long id) {
+  public PermissionResponse getPermissionById(UUID id) {
     Permission permission =
         permissionRepository
             .findById(id)

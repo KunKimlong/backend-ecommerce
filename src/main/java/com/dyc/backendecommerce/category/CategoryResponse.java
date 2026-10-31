@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.category;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class CategoryResponse {
-  private Long id;
+  private UUID id;
   private String name;
   private AssetData asset;
   private AuditableResult createdBy;

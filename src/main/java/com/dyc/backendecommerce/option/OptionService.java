@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.option;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.util.List;
@@ -50,7 +52,7 @@ public class OptionService {
     return modelMapper.map(option, OptionResponse.class);
   }
 
-  public OptionResponse updateOption(Long id, OptionRequest optionRequest) {
+  public OptionResponse updateOption(UUID id, OptionRequest optionRequest) {
     var option = optionRepository.findById(id).orElse(null);
     if (option != null) {
       option.setName(optionRequest.getName());
@@ -61,7 +63,7 @@ public class OptionService {
     }
   }
 
-  public void deleteOption(Long id) {
+  public void deleteOption(UUID id) {
     var option = optionRepository.findById(id).orElse(null);
     if (option != null) {
       optionRepository.delete(option);
@@ -70,7 +72,7 @@ public class OptionService {
     }
   }
 
-  public Option getOption(Long id) {
+  public Option getOption(UUID id) {
     return optionRepository
         .findById(id)
         .orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));

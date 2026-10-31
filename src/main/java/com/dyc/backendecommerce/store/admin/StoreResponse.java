@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.store.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +15,11 @@ import lombok.Setter;
 @Setter
 @Builder
 public class StoreResponse {
-  private Long id;
-  private Long assetId;
+  private UUID id;
+  private UUID assetId;
   private String logoPath;
+  private String darkLogoPath;
+  private String faviconPath;
   private String name;
   private String description;
   private String location;

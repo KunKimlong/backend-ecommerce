@@ -1,10 +1,12 @@
 package com.dyc.backendecommerce.category;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import com.dyc.backendecommerce.shared.util.PageRequests;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/category")
 @AllArgsConstructor
 public class CategoryController {
+  // Columns the admin table can sort by
+  private static final Set<String> SORTABLE = Set.of("id", "name");
+
   private final CategoryService categoryService;
 
   @GetMapping
@@ -32,14 +37,13 @@ public class CategoryController {
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
-    Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PageRequests.sorted(page, size, sortBy, ascending, SORTABLE);
     var categoryResponse = categoryService.getAllCategory(name, pageable);
     return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+  public ResponseEntity<CategoryResponse> findById(@PathVariable UUID id) {
     return new ResponseEntity<>(categoryService.getCategoryById(id), HttpStatus.OK);
   }
 
@@ -53,7 +57,7 @@ public class CategoryController {
 
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<CategoryResponse> updateCategory(
-      @PathVariable long id,
+      @PathVariable UUID id,
       @RequestPart("data") CategoryRequest categoryRequest,
       @RequestPart(value = "file", required = false) MultipartFile file) {
     var categoryResponse = categoryService.updateCategory(id, categoryRequest, file);
@@ -61,7 +65,7 @@ public class CategoryController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCategory(@PathVariable long id) {
+  public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
     categoryService.deleteCategory(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }

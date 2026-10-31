@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.shared.config;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.entity.CustomUserDetails;
 import lombok.NonNull;
 import org.springframework.data.domain.AuditorAware;
@@ -10,11 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class AuditorAwareImpl implements AuditorAware<Long> {
+public class AuditorAwareImpl implements AuditorAware<UUID> {
 
     @Override
     @NonNull
-    public Optional<Long> getCurrentAuditor() {
+    public Optional<UUID> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()
@@ -22,7 +24,7 @@ public class AuditorAwareImpl implements AuditorAware<Long> {
             return Optional.empty();
         }
 
-        Long userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+        UUID userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
         return Optional.ofNullable(userId);
     }
 }

@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.product.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.optionvalue.OptionValueData;
 import java.math.BigDecimal;
@@ -16,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class ProductVariantResponse {
-  private Long id;
+  private UUID id;
   private String name;
   private BigDecimal price;
   private BigDecimal salePrice;

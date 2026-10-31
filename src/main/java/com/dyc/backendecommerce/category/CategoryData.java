@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.category;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class CategoryData {
-  private Long id;
+  private UUID id;
   private String name;
   private AssetData asset;
 }

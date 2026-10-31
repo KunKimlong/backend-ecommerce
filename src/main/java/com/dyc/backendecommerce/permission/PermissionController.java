@@ -1,10 +1,12 @@
 package com.dyc.backendecommerce.permission;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import com.dyc.backendecommerce.shared.util.PageRequests;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin/permissions")
 @AllArgsConstructor
 public class PermissionController {
+  // Columns the admin table can sort by
+  private static final Set<String> SORTABLE = Set.of("id", "name", "module", "description");
 
   private final PermissionService permissionService;
 
@@ -27,13 +31,12 @@ public class PermissionController {
       @RequestParam(defaultValue = "20") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
-    Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PageRequests.sorted(page, size, sortBy, ascending, SORTABLE);
     return new ResponseEntity<>(permissionService.getAllPermissions(name, pageable), HttpStatus.OK);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<PermissionResponse> getPermissionById(@PathVariable Long id) {
+  public ResponseEntity<PermissionResponse> getPermissionById(@PathVariable UUID id) {
     return new ResponseEntity<>(permissionService.getPermissionById(id), HttpStatus.OK);
   }
 }

@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class AssetData {
-  private Long id;
+  private UUID id;
   private String name;
   private String path;
   private String type;

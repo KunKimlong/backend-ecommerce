@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - context: v1.11.0
+  - changeSet:
+      id: 1793500000000-1
+      author: Claude
+      comment: >-
+        When the password was last reset. Tokens issued before it are rejected, so a reset signs out every
+        existing session (including one an attacker may hold). Null = never reset.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: credentials_changed_at
+                  type: timestamp with time zone

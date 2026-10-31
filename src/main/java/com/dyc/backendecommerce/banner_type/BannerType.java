@@ -1,8 +1,9 @@
 package com.dyc.backendecommerce.banner_type;
 
+import java.util.UUID;
+import com.dyc.backendecommerce.shared.entity.UuidV7;
+
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class BannerType {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidV7
+    private UUID id;
 
     private String name;
 }

@@ -1,14 +1,17 @@
 package com.dyc.backendecommerce.banner;
 
+import java.util.UUID;
+import com.dyc.backendecommerce.shared.entity.UuidV7;
+
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.banner_type.BannerType;
 import com.dyc.backendecommerce.product.Product;
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -29,8 +32,8 @@ import lombok.Setter;
 @Builder
 public class Banner extends Auditable {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @UuidV7
+  private UUID id;
 
   @Column(name = "label", length = 100)
   private String label;
@@ -64,4 +67,9 @@ public class Banner extends Auditable {
 
   @Column(name = "banner_order")
   private Integer order;
+
+  @Builder.Default
+  @Enumerated(EnumType.STRING)
+  @Column(name = "placement", nullable = false, length = 20)
+  private BannerPlacement placement = BannerPlacement.HERO;
 }

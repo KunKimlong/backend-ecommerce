@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - context: v1.10.0
+  - changeSet:
+      id: 1793400000000-1
+      author: Claude
+      comment: >-
+        Self-registered customers must confirm their email before signing in. Existing accounts, staff
+        created in the admin app and social sign-ins are already trusted, hence the default of true.
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: email_verified
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 1793400000000-2
+      author: Claude
+      comment: >-
+        One-time codes (email verification today; password reset, SMS or Telegram later). Only a hash of
+        the code is stored. attempts caps guessing; consumed_at makes a code single-use.
+      changes:
+        - createTable:
+            tableName: verification_codes
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_verification_codes_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: purpose
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: channel
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code_hash
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attempts
+                  type: int
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name: consumed_at
+                  type: timestamp
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: uuid
+              - column:
+                  name: updated_by
+                  type: uuid
+        - createIndex:
+            tableName: verification_codes
+            indexName: idx_verification_codes_user_purpose
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: purpose
+              - column:
+                  name: created_at
+                  descending: true

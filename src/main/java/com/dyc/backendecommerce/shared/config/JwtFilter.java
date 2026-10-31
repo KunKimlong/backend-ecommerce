@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.shared.config;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.entity.CustomUserDetails;
 import com.dyc.backendecommerce.shared.util.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -64,7 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if (jwtUtil.validateToken(jwt, userDetails)) {
-          Long userId = jwtUtil.extractUserId(jwt);
+          UUID userId = jwtUtil.extractUserId(jwt);
           CustomUserDetails customUser =
               new CustomUserDetails(
                   userId,

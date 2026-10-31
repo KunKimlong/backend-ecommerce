@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.shared.entity;
 
+import java.util.UUID;
+
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -23,9 +25,9 @@ public abstract class Auditable {
     private LocalDateTime updatedAt;
 
     @CreatedBy
-    private Long createdBy;
+    private UUID createdBy;
 
     @LastModifiedBy
-    private Long updatedBy;
+    private UUID updatedBy;
 }
 

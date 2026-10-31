@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.role;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +14,6 @@ import lombok.Setter;
 @Getter
 @Builder
 public class UserRoleData {
-  private Long id;
+  private UUID id;
   private String name;
 }

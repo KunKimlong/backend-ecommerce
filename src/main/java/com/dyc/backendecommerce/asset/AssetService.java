@@ -1,11 +1,13 @@
 package com.dyc.backendecommerce.asset;
 
 import com.dyc.backendecommerce.shared.enums.AssetType;
+import com.dyc.backendecommerce.shared.exception.BadRequestException;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.service.StorageService;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -15,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,13 +35,15 @@ public class AssetService {
     if (file.getOriginalFilename() == null) {
       throw new InternalServerError("Error uploading file");
     }
-    String fileName = uuid + "." + getExtension(file.getOriginalFilename());
+    // Type and extension come from the file's bytes, never from the client's name or Content-Type
+    ImageType imageType = detectImageType(file);
+    String fileName = uuid + "." + imageType.extension();
     Path path = storageService.getFilePath("image", fileName);
     var asset =
         Asset.builder()
             .name(file.getOriginalFilename())
             .path(path.toString())
-            .type(file.getContentType())
+            .type(imageType.mimeType())
             .size(file.getSize())
             .uuid(uuid)
             .assetType(assetType)
@@ -51,12 +56,56 @@ public class AssetService {
     return assetData;
   }
 
-  private static String getExtension(String filename) {
-    return filename.substring(filename.lastIndexOf(".") + 1);
+  private record ImageType(String mimeType, String extension) {}
+
+  private static final List<String> SERVABLE_IMAGE_TYPES =
+      List.of("image/png", "image/jpeg", "image/gif", "image/webp");
+
+  private static ImageType detectImageType(MultipartFile file) throws IOException {
+    byte[] header;
+    try (InputStream in = file.getInputStream()) {
+      header = in.readNBytes(12);
+    }
+    if (startsWith(header, 0, 0x89, 'P', 'N', 'G')) {
+      return new ImageType("image/png", "png");
+    }
+    if (startsWith(header, 0, 0xFF, 0xD8, 0xFF)) {
+      return new ImageType("image/jpeg", "jpg");
+    }
+    if (startsWith(header, 0, 'G', 'I', 'F', '8')) {
+      return new ImageType("image/gif", "gif");
+    }
+    if (startsWith(header, 0, 'R', 'I', 'F', 'F') && startsWith(header, 8, 'W', 'E', 'B', 'P')) {
+      return new ImageType("image/webp", "webp");
+    }
+    throw new BadRequestException("Only PNG, JPEG, GIF and WEBP images are allowed");
+  }
+
+  private static boolean startsWith(byte[] data, int offset, int... expected) {
+    if (data.length < offset + expected.length) {
+      return false;
+    }
+    for (int i = 0; i < expected.length; i++) {
+      if ((data[offset + i] & 0xFF) != expected[i]) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public Asset findByUUID(UUID uuid) {
-    return assetRepository.findByUuid(uuid);
+    Asset asset = assetRepository.findByUuid(uuid);
+    if (asset == null) {
+      throw new NotFoundException("Image not found");
+    }
+    return asset;
+  }
+
+  /** Assets stored before type checking may not be images; never serve those inline. */
+  public MediaType servableContentType(Asset asset) {
+    return SERVABLE_IMAGE_TYPES.contains(asset.getType())
+        ? MediaType.parseMediaType(asset.getType())
+        : MediaType.APPLICATION_OCTET_STREAM;
   }
 
   public ResponseData<AssetResponse> getAssetResponse(String name, Pageable pageable) {

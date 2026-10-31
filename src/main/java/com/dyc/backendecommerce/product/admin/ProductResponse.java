@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.product.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.category.CategoryData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class ProductResponse {
-  private Long id;
+  private UUID id;
   private String name;
   private String description;
   private BigDecimal salePrice;

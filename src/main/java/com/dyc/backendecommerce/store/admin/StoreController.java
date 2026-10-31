@@ -1,8 +1,10 @@
 package com.dyc.backendecommerce.store.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import com.dyc.backendecommerce.store.StoreService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/admin/store")
 public class StoreController {
   private final StoreService storeService;
-  private final ObjectMapper objectMapper;
 
   @GetMapping
   public ResponseEntity<ResponseData<StoreResponse>> getStores(
@@ -39,10 +40,12 @@ public class StoreController {
 
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<StoreResponse> updateStore(
-      @PathVariable Long id,
-      @RequestPart(value = "data") String dataJson,
-      @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
-    StoreRequest request = objectMapper.readValue(dataJson, StoreRequest.class);
-    return new ResponseEntity<>(storeService.updateStore(id, request, file), HttpStatus.OK);
+      @PathVariable UUID id,
+      @Valid @RequestPart(value = "data") StoreRequest request,
+      @RequestPart(value = "file", required = false) MultipartFile file,
+      @RequestPart(value = "darkLogo", required = false) MultipartFile darkLogo,
+      @RequestPart(value = "favicon", required = false) MultipartFile favicon) {
+    return new ResponseEntity<>(
+        storeService.updateStore(id, request, file, darkLogo, favicon), HttpStatus.OK);
   }
 }

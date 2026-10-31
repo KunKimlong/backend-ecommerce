@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.user;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.enums.Gender;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -14,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class UserData {
-  private Long id;
+  private UUID id;
   private String firstName;
   private String lastName;
   private String email;

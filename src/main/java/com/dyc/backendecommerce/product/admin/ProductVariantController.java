@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.product.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,13 +21,13 @@ public class ProductVariantController {
   private final ProductService productService;
 
   @GetMapping("/{id}")
-  public ResponseEntity<ProductVariantResponse> getVariant(@PathVariable Long id) {
+  public ResponseEntity<ProductVariantResponse> getVariant(@PathVariable UUID id) {
     return new ResponseEntity<>(productService.getVariantById(id), HttpStatus.OK);
   }
 
   @PutMapping("/{id}")
   public ResponseEntity<ProductVariantResponse> updateVariant(
-      @PathVariable Long id, @Valid @RequestBody ProductVariantUpdateRequest request) {
+      @PathVariable UUID id, @Valid @RequestBody ProductVariantUpdateRequest request) {
     return new ResponseEntity<>(productService.updateVariant(id, request), HttpStatus.OK);
   }
 }

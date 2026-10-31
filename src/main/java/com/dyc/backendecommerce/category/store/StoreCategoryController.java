@@ -28,6 +28,6 @@ public class StoreCategoryController {
             @RequestParam(defaultValue = "true") boolean ascending) {
         Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return new ResponseEntity<>(categoryService.getAllCategory(null, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.getStoreCategories(pageable), HttpStatus.OK);
     }
 }

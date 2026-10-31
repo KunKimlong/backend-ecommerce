@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.optionvalue;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -44,13 +46,13 @@ public class OptionValueController {
 
   @PutMapping("/{id}")
   public ResponseEntity<OptionValueResponse> updateOptionValue(
-      @PathVariable long id, @RequestBody OptionValueRequest request) {
+      @PathVariable UUID id, @RequestBody OptionValueRequest request) {
     var response = optionValueService.updateOptionValue(id, request);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteOptionValue(@PathVariable long id) {
+  public ResponseEntity<Void> deleteOptionValue(@PathVariable UUID id) {
     optionValueService.deleteOptionValue(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }

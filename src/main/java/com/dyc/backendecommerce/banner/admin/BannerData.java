@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.banner.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.product.admin.ProductResponse;
 import java.time.LocalDateTime;
@@ -15,10 +17,10 @@ import lombok.Setter;
 @Getter
 @Builder
 public class BannerData {
-  private Long id;
+  private UUID id;
   private String label;
   private String headerLabel;
-    private Long bannerTypeId;
+    private UUID bannerTypeId;
     private String type;
     private String description;
   private String buttonName;

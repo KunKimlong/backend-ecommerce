@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - context: v1.7.0
+  - changeSet:
+      id: 1793100000000-1
+      author: Kimlong KUN
+      comment: Which storefront section a banner is shown in; existing banners stay in the hero slider
+      changes:
+        - addColumn:
+            tableName: banners
+            columns:
+              - column:
+                  name: placement
+                  type: varchar(20)
+                  defaultValue: HERO
+                  constraints:
+                    nullable: false

@@ -1,0 +1,288 @@
+databaseChangeLog:
+  - context: v1.6.0
+  - changeSet:
+      id: 1793000000000-1
+      author: Kimlong KUN
+      comment: Customer orders placed from the cart (cash on delivery)
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: order_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+                    uniqueConstraintName: uk_orders_order_number
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_orders_user
+                    references: users(id)
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_method
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: note
+                  type: varchar(500)
+              - column:
+                  name: subtotal
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shipping_fee
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_orders_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_orders_updated_by
+                    references: users(id)
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_user_created
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: created_at
+  - changeSet:
+      id: 1793000000000-2
+      author: Kimlong KUN
+      comment: Order lines; product details are copied so history survives product edits and deletes
+      changes:
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_order_items_order
+                    references: orders(id)
+                    deleteCascade: true
+              - column:
+                  name: product_variant_id
+                  type: uuid
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: variant_name
+                  type: varchar(255)
+              - column:
+                  name: image_uuid
+                  type: uuid
+              - column:
+                  name: unit_price
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: line_total
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: product_variant_id
+            constraintName: fk_order_items_product_variant
+            referencedTableName: product_variants
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_order
+            columns:
+              - column:
+                  name: order_id
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_product
+            columns:
+              - column:
+                  name: product_id
+        - sql:
+            sql: ALTER TABLE order_items ADD CONSTRAINT ck_order_items_quantity CHECK (quantity > 0)
+  - changeSet:
+      id: 1793000000000-3
+      author: Kimlong KUN
+      comment: Saved-for-later products, one row per user and product
+      changes:
+        - createTable:
+            tableName: wishlist_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_wishlist_items_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_wishlist_items_product
+                    references: products(id)
+                    deleteCascade: true
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_wishlist_items_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_wishlist_items_updated_by
+                    references: users(id)
+        - addUniqueConstraint:
+            tableName: wishlist_items
+            columnNames: user_id, product_id
+            constraintName: uk_wishlist_items_user_product
+  - changeSet:
+      id: 1793000000000-4
+      author: Kimlong KUN
+      comment: Messages sent from the storefront contact form
+      changes:
+        - createTable:
+            tableName: contact_messages
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(30)
+              - column:
+                  name: subject
+                  type: varchar(150)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: varchar(2000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: uuid
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: uuid

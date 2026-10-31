@@ -66,7 +66,7 @@ public class AssetController {
     Resource resource = new FileSystemResource(asset.getPath());
 
     return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType(asset.getType()))
+        .contentType(assetService.servableContentType(asset))
         .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
         .body(resource);
   }

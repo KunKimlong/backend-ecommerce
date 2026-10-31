@@ -1,10 +1,11 @@
 package com.dyc.backendecommerce.permission;
 
+import java.util.UUID;
+import com.dyc.backendecommerce.shared.entity.UuidV7;
+
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,8 +24,8 @@ import lombok.Setter;
 public class Permission extends Auditable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @UuidV7
+  private UUID id;
 
   @Column(nullable = false, unique = true, length = 100)
   private String name;

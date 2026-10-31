@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.permission;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class PermissionData {
-  private Long id;
+  private UUID id;
   private String name;
   private String description;
   private String module;

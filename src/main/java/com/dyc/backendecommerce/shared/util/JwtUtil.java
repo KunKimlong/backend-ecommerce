@@ -1,5 +1,8 @@
 package com.dyc.backendecommerce.shared.util;
 
+import java.util.UUID;
+
+import com.dyc.backendecommerce.shared.entity.CustomUserDetails;
 import com.dyc.backendecommerce.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +33,7 @@ public class JwtUtil {
     Key key = Keys.hmacShaKeyFor(keyBytes);
     return Jwts.builder()
         .setSubject(userDetails.getUsername())
-        .claim("userId", user.getId())
+        .claim("userId", user.getId().toString())
         .claim("role", userDetails.getAuthorities().iterator().next().getAuthority())
         .claim("email", user.getEmail())
         .claim("firstName", user.getFirstName())
@@ -63,8 +66,8 @@ public class JwtUtil {
         .getSubject();
   }
 
-  public Long extractUserId(String token) {
-    return extractClaim(token, claims -> claims.get("userId", Long.class));
+  public UUID extractUserId(String token) {
+    return extractClaim(token, claims -> UUID.fromString(claims.get("userId", String.class)));
   }
 
   public <T> T extractClaim(String token, Function<Claims, T> resolver) {
@@ -76,7 +79,19 @@ public class JwtUtil {
 
   public boolean validateToken(String token, UserDetails userDetails) {
     String username = extractUsername(token);
-    return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    return username.equals(userDetails.getUsername())
+        && !isTokenExpired(token)
+        && !issuedBeforeCredentialsChanged(token, userDetails);
+  }
+
+  // A password reset ends every session that existed before it. iat has whole-second precision,
+  // which is why the reset time is stored truncated to seconds.
+  private boolean issuedBeforeCredentialsChanged(String token, UserDetails userDetails) {
+    if (!(userDetails instanceof CustomUserDetails details) || details.getCredentialsChangedAt() == null) {
+      return false;
+    }
+    Date issuedAt = extractClaim(token, Claims::getIssuedAt);
+    return issuedAt == null || issuedAt.toInstant().isBefore(details.getCredentialsChangedAt());
   }
 
   private boolean isTokenExpired(String token) {

@@ -2,6 +2,7 @@ package com.dyc.backendecommerce.shared.config;
 
 import com.dyc.backendecommerce.permission.Permission;
 import com.dyc.backendecommerce.role.Role;
+import com.dyc.backendecommerce.shared.entity.CustomUserDetails;
 import com.dyc.backendecommerce.user.User;
 import com.dyc.backendecommerce.user.UserRepository;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class CustomUserDetailsService implements UserDetailsService {
       authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
     }
 
-    return new org.springframework.security.core.userdetails.User(
-        user.getEmail(), user.getPassword(), authorities);
+    return new CustomUserDetails(
+        user.getId(), user.getEmail(), user.getPassword(), authorities, user.getCredentialsChangedAt());
   }
 }

@@ -1,11 +1,12 @@
 package com.dyc.backendecommerce.role;
 
+import java.util.UUID;
+import com.dyc.backendecommerce.shared.entity.UuidV7;
+
 import com.dyc.backendecommerce.permission.Permission;
 import com.dyc.backendecommerce.shared.entity.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -29,8 +30,8 @@ import lombok.Setter;
 public class Role extends Auditable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @UuidV7
+  private UUID id;
 
   @Column(nullable = false, unique = true, length = 50)
   private String name;

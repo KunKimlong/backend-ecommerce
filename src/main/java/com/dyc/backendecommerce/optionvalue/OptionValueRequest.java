@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.optionvalue;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,5 +15,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OptionValueRequest {
     private String name;
-    private Long optionId;
+    private UUID optionId;
 }

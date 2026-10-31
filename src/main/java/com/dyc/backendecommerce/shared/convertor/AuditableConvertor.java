@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.shared.convertor;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import com.dyc.backendecommerce.user.UserRepository;
 import org.modelmapper.Converter;
@@ -7,7 +9,7 @@ import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuditableConvertor implements Converter<Long, AuditableResult> {
+public class AuditableConvertor implements Converter<UUID, AuditableResult> {
   private final UserRepository userRepository;
 
   public AuditableConvertor(UserRepository userRepository) {
@@ -15,8 +17,8 @@ public class AuditableConvertor implements Converter<Long, AuditableResult> {
   }
 
   @Override
-  public AuditableResult convert(MappingContext<Long, AuditableResult> context) {
-    Long source = context.getSource();
+  public AuditableResult convert(MappingContext<UUID, AuditableResult> context) {
+    UUID source = context.getSource();
     if (source == null) return null;
 
     var user = userRepository.findById(source).orElse(null);

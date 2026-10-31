@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.banner;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.asset.AssetData;
 import com.dyc.backendecommerce.asset.AssetRepository;
@@ -8,14 +10,18 @@ import com.dyc.backendecommerce.banner.admin.BannerRequest;
 import com.dyc.backendecommerce.banner.admin.BannerResponse;
 import com.dyc.backendecommerce.banner_type.BannerTypeRepository;
 import com.dyc.backendecommerce.product.ProductRepository;
+import com.dyc.backendecommerce.shared.config.CacheConfig;
 import com.dyc.backendecommerce.shared.enums.AssetType;
 import com.dyc.backendecommerce.shared.exception.InternalServerError;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,13 +60,31 @@ public class BannerService {
         .build();
   }
 
+  /** Banners in one storefront section whose start/end window includes today. */
+  @Cacheable(CacheConfig.STORE_BANNERS)
   @Transactional(readOnly = true)
-  public BannerResponse getBannerById(Long id) {
+  public ResponseData<BannerResponse> getActiveBanners(
+      BannerPlacement placement, Pageable pageable) {
+    LocalDate today = LocalDate.now();
+    Page<Banner> banners =
+        bannerRepository.findByPlacementAndStartAtLessThanEqualAndEndAtGreaterThanEqual(
+            placement, today, today, pageable);
+    return ResponseData.<BannerResponse>builder()
+        .data(banners.getContent().stream().map(this::mapToBannerResponse).toList())
+        .page(banners.getNumber())
+        .pageSize(banners.getSize())
+        .total(banners.getTotalElements())
+        .build();
+  }
+
+  @Transactional(readOnly = true)
+  public BannerResponse getBannerById(UUID id) {
     var banner =
         bannerRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
     return mapToBannerResponse(banner);
   }
 
+  @CacheEvict(cacheNames = CacheConfig.STORE_BANNERS, allEntries = true)
   public BannerResponse createBanner(BannerRequest bannerRequest, MultipartFile file) {
     var banner = new Banner();
     setBannerRelations(banner, bannerRequest);
@@ -73,7 +97,8 @@ public class BannerService {
     return mapToBannerResponse(bannerRepository.save(banner));
   }
 
-  public BannerResponse updateBanner(Long id, BannerRequest bannerRequest, MultipartFile file) {
+  @CacheEvict(cacheNames = CacheConfig.STORE_BANNERS, allEntries = true)
+  public BannerResponse updateBanner(UUID id, BannerRequest bannerRequest, MultipartFile file) {
     var banner =
         bannerRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
 
@@ -134,7 +159,8 @@ public class BannerService {
     }
   }
 
-  public void deleteBanner(Long id) {
+  @CacheEvict(cacheNames = CacheConfig.STORE_BANNERS, allEntries = true)
+  public void deleteBanner(UUID id) {
     if (!bannerRepository.existsById(id)) {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }

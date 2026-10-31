@@ -1,11 +1,14 @@
 package com.dyc.backendecommerce.banner.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.banner.BannerService;
 import com.dyc.backendecommerce.shared.util.ResponseData;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import com.dyc.backendecommerce.shared.util.PageRequests;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
@@ -24,11 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @RequestMapping("/api/admin/banner")
 public class BannerController {
+    // Columns the admin table can sort by
+    private static final Set<String> SORTABLE = Set.of("id", "label", "headerLabel", "bannerType", "order", "startAt", "endAt");
+
     private final BannerService bannerService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BannerResponse> saveBanner(
-            @RequestPart("data") BannerRequest bannerRequest,
+            @Valid @RequestPart("data") BannerRequest bannerRequest,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         return new ResponseEntity<>(bannerService.createBanner(bannerRequest, file), HttpStatus.CREATED);
     }
@@ -40,26 +46,25 @@ public class BannerController {
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "false") boolean ascending) {
-        Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
+        Pageable pageable = PageRequests.sorted(page, size, sortBy, ascending, SORTABLE);
         return new ResponseEntity<>(bannerService.getAllBanners(label, pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BannerResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<BannerResponse> findById(@PathVariable UUID id) {
         return new ResponseEntity<>(bannerService.getBannerById(id), HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BannerResponse> updateBanner(
-            @PathVariable Long id,
-            @RequestPart("data") BannerRequest bannerRequest,
+            @PathVariable UUID id,
+            @Valid @RequestPart("data") BannerRequest bannerRequest,
             @RequestPart(value = "file", required = false) MultipartFile file) {
         return new ResponseEntity<>(bannerService.updateBanner(id, bannerRequest, file), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBanner(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBanner(@PathVariable UUID id) {
         bannerService.deleteBanner(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

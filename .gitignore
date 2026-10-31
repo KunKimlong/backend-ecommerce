@@ -34,3 +34,5 @@ build/
 
 file-storage/
 .env
+.scannerwork/
+/logs/

@@ -1,0 +1,151 @@
+databaseChangeLog:
+  - context: v1.8.0
+  - changeSet:
+      id: 1793200000000-1
+      author: Claude
+      comment: Every authenticated request looks the user up by email (JwtFilter), and emails must be unique anyway
+      changes:
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: email
+            constraintName: uk_users_email
+  - changeSet:
+      id: 1793200000000-2
+      author: Claude
+      comment: Catalog lookups - variants per product, category filter, newest-first and price sorting/filtering
+      changes:
+        - createIndex:
+            tableName: product_variants
+            indexName: idx_product_variants_product
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            tableName: products
+            indexName: idx_products_category
+            columns:
+              - column:
+                  name: category_id
+        - createIndex:
+            tableName: products
+            indexName: idx_products_created_at
+            columns:
+              - column:
+                  name: created_at
+                  descending: true
+              - column:
+                  name: id
+                  descending: true
+        - createIndex:
+            tableName: products
+            indexName: idx_products_sale_price
+            columns:
+              - column:
+                  name: sale_price
+  - changeSet:
+      id: 1793200000000-3
+      author: Claude
+      comment: Home page banner sections are read by placement in display order on every visit
+      changes:
+        - createIndex:
+            tableName: banners
+            indexName: idx_banners_placement_order
+            columns:
+              - column:
+                  name: placement
+              - column:
+                  name: banner_order
+        - createIndex:
+            tableName: banners
+            indexName: idx_banners_product
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            tableName: banners
+            indexName: idx_banners_asset
+            columns:
+              - column:
+                  name: asset_id
+  - changeSet:
+      id: 1793200000000-4
+      author: Claude
+      comment: Postgres doesn't index foreign keys on its own; these are joined on or checked when the parent row is deleted
+      changes:
+        - createIndex:
+            tableName: cart_items
+            indexName: idx_cart_items_variant
+            columns:
+              - column:
+                  name: product_variant_id
+        - createIndex:
+            tableName: wishlist_items
+            indexName: idx_wishlist_items_product
+            columns:
+              - column:
+                  name: product_id
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_variant
+            columns:
+              - column:
+                  name: product_variant_id
+        - createIndex:
+            tableName: option_values
+            indexName: idx_option_values_option
+            columns:
+              - column:
+                  name: option_id
+        - createIndex:
+            tableName: product_variant_assets
+            indexName: idx_product_variant_assets_asset
+            columns:
+              - column:
+                  name: asset_id
+        - createIndex:
+            tableName: product_variant_option_values
+            indexName: idx_pv_option_values_option_value
+            columns:
+              - column:
+                  name: option_value_id
+        - createIndex:
+            tableName: user_roles
+            indexName: idx_user_roles_role
+            columns:
+              - column:
+                  name: role_id
+        - createIndex:
+            tableName: role_permissions
+            indexName: idx_role_permissions_permission
+            columns:
+              - column:
+                  name: permission_id
+        - createIndex:
+            tableName: users
+            indexName: idx_users_asset
+            columns:
+              - column:
+                  name: asset_id
+  - changeSet:
+      id: 1793200000000-5
+      author: Claude
+      comment: >-
+        "Contains" searches (LIKE '%text%') can't use a normal index; trigram indexes make them fast.
+        The shop search compares lower(name), Spring Data's ...ContainingIgnoreCase methods compare upper(name),
+        so each index matches the expression its query uses.
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS pg_trgm
+        - sql:
+            sql: CREATE INDEX idx_products_name_lower_trgm ON products USING gin (lower(name) gin_trgm_ops)
+        - sql:
+            sql: CREATE INDEX idx_products_name_upper_trgm ON products USING gin (upper(name) gin_trgm_ops)
+        - sql:
+            sql: CREATE INDEX idx_assets_name_upper_trgm ON assets USING gin (upper(name) gin_trgm_ops)
+      rollback:
+        - sql:
+            sql: DROP INDEX IF EXISTS idx_products_name_lower_trgm
+        - sql:
+            sql: DROP INDEX IF EXISTS idx_products_name_upper_trgm
+        - sql:
+            sql: DROP INDEX IF EXISTS idx_assets_name_upper_trgm

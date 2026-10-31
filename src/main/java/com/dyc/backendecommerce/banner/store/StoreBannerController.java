@@ -1,5 +1,6 @@
 package com.dyc.backendecommerce.banner.store;
 
+import com.dyc.backendecommerce.banner.BannerPlacement;
 import com.dyc.backendecommerce.banner.BannerService;
 import com.dyc.backendecommerce.banner.admin.BannerResponse;
 import com.dyc.backendecommerce.shared.util.ResponseData;
@@ -22,12 +23,14 @@ public class StoreBannerController {
 
   @GetMapping
   public ResponseEntity<ResponseData<BannerResponse>> getActiveBanners(
+      @RequestParam(defaultValue = "HERO") BannerPlacement placement,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "order") String sortBy,
       @RequestParam(defaultValue = "true") boolean ascending) {
     Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
-    return new ResponseEntity<>(bannerService.getAllBanners(null, pageable), HttpStatus.OK);
+    return new ResponseEntity<>(
+        bannerService.getActiveBanners(placement, pageable), HttpStatus.OK);
   }
 }

@@ -1,10 +1,12 @@
 package com.dyc.backendecommerce.option;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import com.dyc.backendecommerce.shared.util.PageRequests;
+import java.util.Set;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/option")
 @AllArgsConstructor
 public class OptionController {
+  // Columns the admin table can sort by
+  private static final Set<String> SORTABLE = Set.of("id", "name");
+
   private final OptionService optionService;
 
   @GetMapping
@@ -30,8 +35,7 @@ public class OptionController {
       @RequestParam(defaultValue = "5") int size,
       @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "false") boolean ascending) {
-    Sort sort = ascending ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-    Pageable pageable = PageRequest.of(page, size, sort);
+    Pageable pageable = PageRequests.sorted(page, size, sortBy, ascending, SORTABLE);
     var optionsResponse = optionService.getAllOptions(name, pageable);
     return new ResponseEntity<>(optionsResponse, HttpStatus.OK);
   }
@@ -45,13 +49,13 @@ public class OptionController {
 
   @PutMapping("/{id}")
   public ResponseEntity<OptionResponse> updateOption(
-      @PathVariable long id, @RequestBody OptionRequest optionRequest) {
+      @PathVariable UUID id, @RequestBody OptionRequest optionRequest) {
     var optionResponse = optionService.updateOption(id, optionRequest);
     return new ResponseEntity<>(optionResponse, HttpStatus.OK);
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteOption(@PathVariable long id) {
+  public ResponseEntity<Void> deleteOption(@PathVariable UUID id) {
     optionService.deleteOption(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }

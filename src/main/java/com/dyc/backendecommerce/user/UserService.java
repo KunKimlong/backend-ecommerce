@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.user;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.asset.AssetService;
@@ -52,7 +54,8 @@ public class UserService {
   @Transactional(readOnly = true)
   public ResponseData<UserResponse> getAllUsers(
       String name, LocalDate joinDate, Pageable pageable) {
-    Page<User> users = userRepository.findAll(pageable);
+    Page<User> users =
+        userRepository.findAll(new UserFilter(name, joinDate).toSpecification(), pageable);
     List<UserResponse> userResponses =
         users.getContent().stream().map(this::mapToUserResponse).toList();
 
@@ -65,7 +68,7 @@ public class UserService {
   }
 
   @Transactional(readOnly = true)
-  public UserResponse getUserById(Long id) {
+  public UserResponse getUserById(UUID id) {
     User user =
         userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
     return mapToUserResponse(user);
@@ -101,7 +104,7 @@ public class UserService {
     return mapToUserResponse(user);
   }
 
-  public UserResponse updateUser(Long id, UserRequest request, MultipartFile file) {
+  public UserResponse updateUser(UUID id, UserRequest request, MultipartFile file) {
     User user =
         userRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
 

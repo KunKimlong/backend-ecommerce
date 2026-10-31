@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.role;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.permission.PermissionData;
 import com.dyc.backendecommerce.permission.PermissionRepository;
 import com.dyc.backendecommerce.shared.exception.NotFoundException;
@@ -42,7 +44,7 @@ public class RoleService {
         .build();
   }
 
-  public RoleResponse getRoleById(Long id) {
+  public RoleResponse getRoleById(UUID id) {
     Role role =
         roleRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
     return mapToRoleResponse(role);
@@ -59,7 +61,7 @@ public class RoleService {
     return mapToRoleResponse(roleRepository.save(role));
   }
 
-  public RoleResponse updateRole(Long id, RoleRequest request) {
+  public RoleResponse updateRole(UUID id, RoleRequest request) {
     var role =
         roleRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
 
@@ -74,7 +76,7 @@ public class RoleService {
     return mapToRoleResponse(roleRepository.save(role));
   }
 
-  public void deleteRole(Long id) {
+  public void deleteRole(UUID id) {
     if (!roleRepository.existsById(id)) {
       throw new NotFoundException(NOT_FOUND_MESSAGE);
     }

@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.banner_type;
 
+import java.util.UUID;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class BannerTypeResponse {
-    private Long id;
+    private UUID id;
     private String name;
 }

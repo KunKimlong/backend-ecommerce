@@ -1,6 +1,9 @@
 package com.dyc.backendecommerce.banner.admin;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.AssetData;
+import com.dyc.backendecommerce.banner.BannerPlacement;
 import com.dyc.backendecommerce.product.store.ProductData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
 import java.time.LocalDate;
@@ -16,10 +19,10 @@ import lombok.Setter;
 @Getter
 @Builder
 public class BannerResponse {
-  private Long id;
+  private UUID id;
   private String label;
   private String headerLabel;
-  private Long bannerTypeId;
+  private UUID bannerTypeId;
   private String type;
   private String description;
   private String buttonName;
@@ -28,6 +31,7 @@ public class BannerResponse {
   private Integer order;
   private LocalDate startAt;
   private LocalDate endAt;
+  private BannerPlacement placement;
   private AuditableResult createdBy;
   private AuditableResult updatedBy;
 }

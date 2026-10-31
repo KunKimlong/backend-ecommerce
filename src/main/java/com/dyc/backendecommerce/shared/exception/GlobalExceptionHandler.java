@@ -1,10 +1,13 @@
 package com.dyc.backendecommerce.shared.exception;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -13,6 +16,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  @Value("${spring.servlet.multipart.max-file-size}")
+  private String maxFileSize;
+
+
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<Map<String, Object>> handleEmployeeNotFound(NotFoundException ex) {
     Map<String, Object> body = new HashMap<>();
@@ -66,6 +73,28 @@ public class GlobalExceptionHandler {
             .builder()
             .timestamp(LocalDateTime.now())
             .message(ex.getMessage())
+            .status(HttpStatus.BAD_REQUEST)
+            .build();
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  public ResponseEntity<ExceptionDto> handleMaxUploadSize(MaxUploadSizeExceededException ex) {
+    ExceptionDto body = ExceptionDto
+            .builder()
+            .timestamp(LocalDateTime.now())
+            .message("File is too large. Maximum upload size is " + maxFileSize)
+            .status(HttpStatus.PAYLOAD_TOO_LARGE)
+            .build();
+    return new ResponseEntity<>(body, HttpStatus.PAYLOAD_TOO_LARGE);
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ExceptionDto> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    ExceptionDto body = ExceptionDto
+            .builder()
+            .timestamp(LocalDateTime.now())
+            .message("Invalid value for '" + ex.getName() + "'")
             .status(HttpStatus.BAD_REQUEST)
             .build();
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);

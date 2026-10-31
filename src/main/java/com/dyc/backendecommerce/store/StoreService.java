@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.store;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.asset.Asset;
 import com.dyc.backendecommerce.asset.AssetRepository;
 import com.dyc.backendecommerce.asset.AssetService;
@@ -9,10 +11,13 @@ import com.dyc.backendecommerce.shared.exception.NotFoundException;
 import com.dyc.backendecommerce.shared.util.ResponseData;
 import com.dyc.backendecommerce.store.admin.StoreRequest;
 import com.dyc.backendecommerce.store.admin.StoreResponse;
+import com.dyc.backendecommerce.store.store.StoreInfoResponse;
 import java.io.IOException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,18 +49,44 @@ public class StoreService {
         .build();
   }
 
-  public StoreResponse updateStore(Long id, StoreRequest request, MultipartFile file) {
+  /** Public storefront details; read from Redis, so the database is only hit after an edit or expiry. */
+  @Cacheable(
+      cacheNames = StoreCacheConfig.STORE_INFO,
+      cacheManager = StoreCacheConfig.REDIS_CACHE_MANAGER,
+      key = "'current'")
+  @Transactional(readOnly = true)
+  public StoreInfoResponse getStoreInfo() {
+    return storeRepository.findAll().stream()
+        .findFirst()
+        .map(
+            store ->
+                new StoreInfoResponse(
+                    store.getName(),
+                    store.getDescription(),
+                    publicImagePath(store.getAsset()),
+                    publicImagePath(store.getDarkLogoAsset()),
+                    publicImagePath(store.getFaviconAsset()),
+                    store.getLocation(),
+                    store.getSupportEmail(),
+                    store.getSupportPhoneNumber()))
+        .orElse(new StoreInfoResponse(null, null, null, null, null, null, null, null));
+  }
+
+  private static String publicImagePath(Asset asset) {
+    return asset != null ? "/api/asset/image/" + asset.getUuid() : null;
+  }
+
+  @CacheEvict(
+      cacheNames = StoreCacheConfig.STORE_INFO,
+      cacheManager = StoreCacheConfig.REDIS_CACHE_MANAGER,
+      key = "'current'")
+  public StoreResponse updateStore(
+      UUID id, StoreRequest request, MultipartFile file, MultipartFile darkLogo, MultipartFile favicon) {
     Store store =
         storeRepository.findById(id).orElseThrow(() -> new NotFoundException(NOT_FOUND_MESSAGE));
 
     if (file != null && !file.isEmpty()) {
-      if (store.getAsset() != null) {
-        try {
-          assetService.delete(store.getAsset().getUuid());
-        } catch (IOException e) {
-          throw new InternalServerError("Failed to delete old logo");
-        }
-      }
+      deleteAsset(store.getAsset(), "logo");
       store.setAsset(uploadFileIfPresent(file));
     } else if (request.getAssetId() != null) {
       store.setAsset(
@@ -69,8 +100,34 @@ public class StoreService {
     store.setSupportEmail(request.getSupportEmail());
     store.setSupportPhoneNumber(request.getSupportPhoneNumber());
 
+    if (darkLogo != null && !darkLogo.isEmpty()) {
+      deleteAsset(store.getDarkLogoAsset(), "dark logo");
+      store.setDarkLogoAsset(uploadFileIfPresent(darkLogo));
+    } else if (request.isRemoveDarkLogo()) {
+      deleteAsset(store.getDarkLogoAsset(), "dark logo");
+      store.setDarkLogoAsset(null);
+    }
+    if (favicon != null && !favicon.isEmpty()) {
+      deleteAsset(store.getFaviconAsset(), "favicon");
+      store.setFaviconAsset(uploadFileIfPresent(favicon));
+    } else if (request.isRemoveFavicon()) {
+      deleteAsset(store.getFaviconAsset(), "favicon");
+      store.setFaviconAsset(null);
+    }
+
     storeRepository.save(store);
     return mapToStoreResponse(store);
+  }
+
+  private void deleteAsset(Asset asset, String label) {
+    if (asset == null) {
+      return;
+    }
+    try {
+      assetService.delete(asset.getUuid());
+    } catch (IOException e) {
+      throw new InternalServerError("Failed to delete old " + label);
+    }
   }
 
   private StoreResponse mapToStoreResponse(Store store) {
@@ -79,6 +136,11 @@ public class StoreService {
       response.setAssetId(store.getAsset().getId());
       response.setLogoPath("/image/" + store.getAsset().getUuid());
     }
+    // Set explicitly: ModelMapper would otherwise match darkLogoAsset.path (the file's location on disk)
+    response.setDarkLogoPath(
+        store.getDarkLogoAsset() != null ? "/image/" + store.getDarkLogoAsset().getUuid() : null);
+    response.setFaviconPath(
+        store.getFaviconAsset() != null ? "/image/" + store.getFaviconAsset().getUuid() : null);
     return response;
   }
 

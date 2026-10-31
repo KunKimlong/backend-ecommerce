@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - context: v1.5.0
+  - changeSet:
+      id: 1792900000000-1
+      author: Kimlong KUN
+      comment: Server-side shopping cart, one row per user and product variant
+      changes:
+        - createTable:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cart_items_user
+                    references: users(id)
+                    deleteCascade: true
+              - column:
+                  name: product_variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_cart_items_product_variant
+                    references: product_variants(id)
+                    deleteCascade: true
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+              - column:
+                  name: created_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_cart_items_created_by
+                    references: users(id)
+              - column:
+                  name: updated_at
+                  type: timestamp
+              - column:
+                  name: updated_by
+                  type: uuid
+                  constraints:
+                    foreignKeyName: fk_cart_items_updated_by
+                    references: users(id)
+        - addUniqueConstraint:
+            tableName: cart_items
+            columnNames: user_id, product_variant_id
+            constraintName: uk_cart_items_user_variant
+        - sql:
+            sql: ALTER TABLE cart_items ADD CONSTRAINT ck_cart_items_quantity CHECK (quantity > 0)

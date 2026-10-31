@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - context: v1.12.0
+  - changeSet:
+      id: 1793600000000-1
+      author: Claude
+      comment: >-
+        Optional logo for dark backgrounds and a browser-tab icon, both uploaded in Store settings.
+        Null dark logo = the regular logo is used in dark mode too; null favicon = the apps' built-in icon.
+      changes:
+        - addColumn:
+            tableName: stores
+            columns:
+              - column:
+                  name: dark_logo_asset_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_store_dark_logo_asset
+                    references: assets(id)
+              - column:
+                  name: favicon_asset_id
+                  type: uuid
+                  constraints:
+                    nullable: true
+                    foreignKeyName: fk_store_favicon_asset
+                    references: assets(id)

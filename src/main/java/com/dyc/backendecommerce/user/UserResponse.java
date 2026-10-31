@@ -1,5 +1,7 @@
 package com.dyc.backendecommerce.user;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.role.Role;
 import com.dyc.backendecommerce.role.UserRoleData;
 import com.dyc.backendecommerce.shared.entity.AuditableResult;
@@ -18,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Builder
 public class UserResponse {
-  private Long id;
+  private UUID id;
   private String firstName;
   private String lastName;
   private String email;

@@ -1,6 +1,9 @@
 package com.dyc.backendecommerce.user;
 
+import java.util.UUID;
+
 import com.dyc.backendecommerce.shared.enums.Gender;
+import com.dyc.backendecommerce.shared.validation.ValidPhone;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,8 +23,8 @@ public class UserRequest {
   private Gender gender;
   private String email;
   private String password;
-  private String phone;
+  @ValidPhone private String phone;
   private LocalDate joinDate;
   private Boolean active;
-  private List<Long> roleIds;
+  private List<UUID> roleIds;
 }
